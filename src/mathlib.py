@@ -7,7 +7,7 @@
 # @date 12.3.2026
 # @author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
 #
-# Implemenation of tests for calculator library
+# Implemenation of calculator functions
 ############################################################################
 import math
 
