@@ -9,9 +9,13 @@
 #
 # Implemenation of tests for calculator library
 ############################################################################
+
 from mathlib import *
 import pytest 
 
+##
+#@test Tests addition function
+#
 def test_add():
     assert add(0,0) == 0
     assert add(0,5) == 5
@@ -21,6 +25,9 @@ def test_add():
     assert add(-0.1, 0.2) == pytest.approx(0.1)
     assert add(532169, 2350789) == 2882958
 
+##
+#@test Tests division function
+#
 def test_div():
     with pytest.raises(ZeroDivisionError):
         div(1,0)
@@ -32,6 +39,9 @@ def test_div():
     assert div(50,50) == 1
     assert div(50,-50) == -1
 
+##
+#@test Tests subtraction function
+#
 def test_sub():
     assert sub(0,0) == 0
     assert sub(-5,0) == -5
@@ -43,7 +53,9 @@ def test_sub():
     assert sub(-1000000000000000000000000,1) == -1000000000000000000000001
     assert sub(-1000000000000000000000000,-1000000000000000000000000) == 0
 
-
+##
+#@test Tests multiplication function
+#
 def test_mul():
     assert mul(2,2) == 4
     assert mul(0,0) == 0
