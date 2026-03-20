@@ -64,10 +64,10 @@ def pow(a,b):
 ##
 # @brief      Calculates the root of a number
 # @param      a the base of the root
+# @param      b the base of the root
 # @exception  ValueError if the base is negative
 # @return     Root of base
-def sqt(a):
+def sqt(a,b):
     if a < 0:
         raise ValueError
-    else:
-        return math.sqrt(a)
+    

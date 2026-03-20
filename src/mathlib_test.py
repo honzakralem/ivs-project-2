@@ -67,3 +67,18 @@ def test_mul():
     assert mul(20, -10) == -200
     assert mul(0.1, 0.1) == pytest.approx(0.01)
     assert mul(-0.2, 0.4) == pytest.approx(-0.08)
+
+##
+#@test Tests power function
+#
+def test_pow():
+    assert pow(2,4) == 16
+    assert pow(0,0) == 1
+    assert pow(4,0) == 1
+    assert pow(0, 24) == 0
+    assert pow(1, 325) == 1
+    assert pow(-3, 2) == 9
+    assert pow(0.5, 2) == 0.25
+    assert pow(9, 0.5) == pytest.approx(3)
+    assert pow(-2, 3) == -8
+    assert pow(2, -1) == 0.5
