@@ -5,16 +5,16 @@
 # @file mathlib_test.py
 # @brief Math library Tests for IVS calculator 2026
 # @date 12.3.2026
-# @author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+# @author Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
 #
-# Implemenation of tests for calculator library
+# Implementation of tests for calculator library
 ############################################################################
 
 from mathlib import *
 import pytest 
 
 ##
-#@test Tests addition function
+#@brief Tests addition function
 #
 def test_add():
     assert add(0,0) == 0
@@ -26,13 +26,13 @@ def test_add():
     assert add(532169, 2350789) == 2882958
 
 ##
-#@test Tests division function
+#@brief Tests division function
 #
 def test_div():
     with pytest.raises(ZeroDivisionError):
         div(1,0)
     assert div(0,1) == 0
-    assert div(1, 0.2) == 5
+    assert div(1, 0.2) == pytest.approx(5)
     assert div(5,-1) == -5
     assert div(-5,1) == -5
     assert div(-30, -5) == 6
@@ -40,7 +40,7 @@ def test_div():
     assert div(50,-50) == -1
 
 ##
-#@test Tests subtraction function
+#@brief Tests subtraction function
 #
 def test_sub():
     assert sub(0,0) == 0
@@ -54,7 +54,7 @@ def test_sub():
     assert sub(-1000000000000000000000000,-1000000000000000000000000) == 0
 
 ##
-#@test Tests multiplication function
+#@brief Tests multiplication function
 #
 def test_mul():
     assert mul(2,2) == 4
@@ -69,7 +69,7 @@ def test_mul():
     assert mul(-0.2, 0.4) == pytest.approx(-0.08)
 
 ##
-#@test Tests power function
+#@brief Tests power function
 #
 def test_pow():
     assert pow(2,4) == 16
@@ -78,7 +78,23 @@ def test_pow():
     assert pow(0, 24) == 0
     assert pow(1, 325) == 1
     assert pow(-3, 2) == 9
-    assert pow(0.5, 2) == 0.25
+    assert pow(0.5, 2) == pytest.approx(0.25)
     assert pow(9, 0.5) == pytest.approx(3)
     assert pow(-2, 3) == -8
     assert pow(2, -1) == 0.5
+
+##
+#@brief Tests root function 
+#
+def test_sqt():
+    assert sqt(9,2) == 3
+    with pytest.raises (ValueError):
+        sqt(-9,2)
+    assert sqt (8,3) == 2
+    assert sqt (0,3) == 0
+    with pytest.raises (ZeroDivisionError):
+        sqt(64,0) 
+    assert sqt (-8,3) == -2
+    assert sqt(16,0.5) == pytest.approx(256)
+    assert sqt(5,1) == 5
+    assert sqt(4, -2) == pytest.approx(0.5)

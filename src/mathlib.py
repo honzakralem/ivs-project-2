@@ -68,6 +68,5 @@ def pow(a,b):
 # @exception  ValueError if the base is negative
 # @return     Root of base
 def sqt(a,b):
-    if a < 0:
-        raise ValueError
+    pass
     
