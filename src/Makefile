@@ -1,3 +1,5 @@
+.PHONY: test clean
+
 test:
 	pytest mathlib_test.py
 
