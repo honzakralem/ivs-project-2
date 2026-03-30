@@ -13,6 +13,8 @@ def eval_precedence(operator):
         return 2
     elif operator == "^":
         return 3
+    else:
+        raise ValueError(f"Unknown operator: {operator}")
 
 ##
 #@return True if operand is a number

@@ -69,4 +69,17 @@ def pow(a,b):
 # @return     Root of base
 def sqt(a,b):
     pass
+
+##
+# @brief      Calculates factorial of a non-negative integer
+# @param      n the input number (non-negative integer)
+# @exception  ValueError if n is negative
+# @exception  TypeError if n is not an integer
+# @return     Factorial of n
+def fac(n):
+    if not isinstance(n, int):
+        raise TypeError("n must be an integer")
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers")
     
+    return math.factorial(n)
