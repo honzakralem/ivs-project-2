@@ -63,12 +63,18 @@ def pow(a,b):
 
 ##
 # @brief      Calculates the root of a number
-# @param      a the base of the root
-# @param      b the base of the root
-# @exception  ValueError if the base is negative
-# @return     Root of base
+# @param      a the number
+# @param      b the degree of the root
+# @exception  ValueError if b == 0
+# @exception  ValueError if a < 0 and b is even
+# @return     b-th root of a
 def sqt(a,b):
-    pass
+    if b == 0:
+        raise ValueError("Root degree cannot be zero")
+    if a < 0 and b % 2 == 0:
+        raise ValueError("Even root of negative number is not real")
+
+    return a ** (1 / b)
 
 ##
 # @brief      Calculates factorial of a non-negative integer

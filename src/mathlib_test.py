@@ -90,6 +90,8 @@ def test_sqt():
     assert sqt(9,2) == 3
     with pytest.raises (ValueError):
         sqt(-9,2)
+    with pytest.raises (ValueError):
+        sqt(9,0)
     assert sqt (8,3) == 2
     assert sqt (0,3) == 0
     with pytest.raises (ZeroDivisionError):
