@@ -94,9 +94,21 @@ def test_sqt():
         sqt(9,0)
     assert sqt (8,3) == 2
     assert sqt (0,3) == 0
-    with pytest.raises (ZeroDivisionError):
+    with pytest.raises (ValueError):
         sqt(64,0) 
     assert sqt (-8,3) == -2
     assert sqt(16,0.5) == pytest.approx(256)
     assert sqt(5,1) == 5
     assert sqt(4, -2) == pytest.approx(0.5)
+
+##
+#@brief Tests fac function 
+#
+def test_fac():
+    assert fac(1) == 1
+    assert fac(2) == 2
+    assert fac(5) == 120
+    with pytest.raises (ValueError):
+        fac(-1)
+    with pytest.raises (TypeError):
+        fac("abc")

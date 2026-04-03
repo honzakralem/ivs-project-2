@@ -74,6 +74,8 @@ def sqt(a,b):
     if a < 0 and b % 2 == 0:
         raise ValueError("Even root of negative number is not real")
 
+    if a < 0 and b % 2 != 0:
+        return -((-a) ** (1/b))
     return a ** (1 / b)
 
 ##
