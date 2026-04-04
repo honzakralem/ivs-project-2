@@ -14,7 +14,7 @@ import sys
 import re
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
                              QVBoxLayout, QGridLayout, QLineEdit, 
-                             QPushButton, QMessageBox, QAction)
+                             QPushButton, QMessageBox, QAction, QLabel)
 from PyQt5.QtCore import Qt
 
 # Import infix to post logic from infixtopost.py
