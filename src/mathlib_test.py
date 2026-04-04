@@ -102,7 +102,7 @@ def test_sqt():
     assert sqt(4, -2) == pytest.approx(0.5)
 
 ##
-#@brief Tests fac function 
+#@brief Tests factorial function 
 #
 def test_fac():
     assert fac(1) == 1
@@ -112,3 +112,16 @@ def test_fac():
         fac(-1)
     with pytest.raises (TypeError):
         fac("abc")
+
+##
+#@brief Tests natural log function 
+#
+def test_ln():
+    assert ln(math.e) == pytest.approx(1)
+    with pytest.raises(ValueError):
+        ln(-1)
+    with pytest.raises(ValueError):
+        ln(0)
+    assert ln(0.11111111) == -2.1972245873362195
+    assert ln(2) == 0.6931471805599453
+    assert ln (3.5) == 1.252762968495368
