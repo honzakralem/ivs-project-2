@@ -98,13 +98,18 @@ class CalculatorGUI(QMainWindow):
             self.grid.addWidget(btn, pos[0], pos[1])
 
         self.setStyleSheet("""
+            QMainWindow, QWidget { background-color: #f2f2f2; color: #111; }
+                           
             QPushButton { border-radius: 8px; border: 2px solid #ccc; }
             QPushButton[btnClass="number"] { background-color: #ffffff; }
             QPushButton[btnClass="number"]:pressed { background-color: #e0e0e0; }
+                           
             QPushButton[btnClass="operator"] { background-color: #d6eaf8; }
             QPushButton[btnClass="operator"]:pressed { background-color: #aed6f1; }
+                           
             QPushButton[btnClass="control"] { background-color: #fadbd8; }
             QPushButton[btnClass="control"]:pressed { background-color: #f5b7b1; }
+                           
             QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
         """)
