@@ -53,9 +53,18 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           mkdir -p package_root/usr/local/bin
-          # Linux binaries typically don't have spaces, so we rename it
           cp "dist/IVS Calculator" package_root/usr/local/bin/ivs-calculator
           chmod +x package_root/usr/local/bin/ivs-calculator
+          
+          mkdir -p package_root/usr/share/applications
+          cat <<EOF > package_root/usr/share/applications/ivs-calculator.desktop
+          [Desktop Entry]
+          Type=Application
+          Name=IVS Calculator $VER
+          Exec=/usr/local/bin/ivs-calculator
+          Terminal=false
+          Categories=Utility;Calculator;
+          EOF
           
           fpm -s dir -t deb -n "ivs-calculator" -v "$VER" -C package_root .
           
@@ -73,6 +82,7 @@ jobs:
           echo '[Setup]' > installer.iss
           echo 'AppName=IVS Calculator' >> installer.iss
           echo "AppVersion=$VER" >> installer.iss
+          echo "UninstallDisplayName=IVS Calculator $VER" >> installer.iss
           echo 'DefaultDirName={autopf}\IVS Calculator' >> installer.iss
           echo 'OutputDir=.' >> installer.iss
           echo 'OutputBaseFilename=IVS-Calculator-Windows-Setup' >> installer.iss
@@ -93,6 +103,8 @@ jobs:
         run: |
           brew install create-dmg
           VER=$(cat VERSION | tr -d '\n\r ')
+
+          mv "dist/IVS Calculator.app" "dist/IVS Calculator $VER.app"
           
           create-dmg \
             --volname "IVS Calculator v$VER Installer" \
