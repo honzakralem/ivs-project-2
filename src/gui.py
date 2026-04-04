@@ -147,7 +147,7 @@ class CalculatorGUI(QMainWindow):
         text = (
             "INTERCALCULATOR\n\n"
             "Version: 1.0.0\n"
-            "\n\n"
+            "\n"
             "Authors:\n"
             "• Ha Pham <xphamha00>\n"
             "• Kristian Duzek <xduzekk00>\n"
@@ -177,7 +177,7 @@ class CalculatorGUI(QMainWindow):
             
             try:
                 eval_string = curr.replace('sqrt', 'sqt')
-                postfix = InfixToPostFix(curr)
+                postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
                 if res == int(res):
