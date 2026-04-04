@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: Calculator-Linux.deb
+            artifact_name: IVS-Calculator-Linux.deb
           - os: windows-latest
-            artifact_name: Calculator-Windows-Setup.exe
+            artifact_name: IVS-Calculator-Windows-Setup.exe
           - os: macos-latest
-            artifact_name: Calculator-macOS.dmg
+            artifact_name: IVS-Calculator-macOS.dmg
 
     runs-on: ${{ matrix.os }}
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: |
-          pyinstaller --noconfirm --onefile --windowed --name "Calculator" src/gui.py
+          pyinstaller --noconfirm --onefile --windowed --name "IVS Calculator" src/gui.py
 
       # ==========================================
       # LINUX: Create a .deb package
@@ -53,11 +53,13 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           mkdir -p package_root/usr/local/bin
-          cp dist/Calculator package_root/usr/local/bin/
+          # Linux binaries typically don't have spaces, so we rename it
+          cp "dist/IVS Calculator" package_root/usr/local/bin/ivs-calculator
+          chmod +x package_root/usr/local/bin/ivs-calculator
           
-          fpm -s dir -t deb -n "calculator" -v "$VER" -C package_root .
+          fpm -s dir -t deb -n "ivs-calculator" -v "$VER" -C package_root .
           
-          mv calculator_${VER}_amd64.deb Calculator-Linux.deb
+          mv ivs-calculator_${VER}_amd64.deb IVS-Calculator-Linux.deb
 
       # ==========================================
       # WINDOWS: Create a Setup Installer
@@ -69,17 +71,17 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           echo '[Setup]' > installer.iss
-          echo 'AppName=Calculator' >> installer.iss
+          echo 'AppName=IVS Calculator' >> installer.iss
           echo "AppVersion=$VER" >> installer.iss
-          echo 'DefaultDirName={autopf}\Calculator' >> installer.iss
+          echo 'DefaultDirName={autopf}\IVS Calculator' >> installer.iss
           echo 'OutputDir=.' >> installer.iss
-          echo 'OutputBaseFilename=Calculator-Windows-Setup' >> installer.iss
+          echo 'OutputBaseFilename=IVS-Calculator-Windows-Setup' >> installer.iss
           echo 'Compression=lzma' >> installer.iss
           echo 'SolidCompression=yes' >> installer.iss
           echo '[Files]' >> installer.iss
-          echo 'Source: "dist\Calculator.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
+          echo 'Source: "dist\IVS Calculator.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
           echo '[Icons]' >> installer.iss
-          echo 'Name: "{autoprograms}\Calculator"; Filename: "{app}\Calculator.exe"' >> installer.iss
+          echo 'Name: "{autoprograms}\IVS Calculator"; Filename: "{app}\IVS Calculator.exe"' >> installer.iss
 
           iscc installer.iss
 
@@ -93,13 +95,13 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           create-dmg \
-            --volname "Calculator v$VER Installer" \
+            --volname "IVS Calculator v$VER Installer" \
             --window-pos 200 120 \
             --window-size 600 300 \
             --icon-size 100 \
             --app-drop-link 425 120 \
-            "Calculator-macOS.dmg" \
-            "dist/Calculator.app"
+            "IVS-Calculator-macOS.dmg" \
+            "dist/IVS Calculator.app"
 
       # ==========================================
       # UPLOAD ARTIFACTS
@@ -149,6 +151,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.check_version.outputs.version }}
-          name: Release v${{ steps.check_version.outputs.version }}
+          name: IVS Calculator v${{ steps.check_version.outputs.version }}
           generate_release_notes: true
           files: release_assets/*
