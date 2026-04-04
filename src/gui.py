@@ -3,51 +3,208 @@
 
 ############################################################################
 # @file gui.py
-# @brief GUI for IVS calculator 2026
+# @brief GUI for INTERCALCULATOR
 # @date 3.4.2026
-# @author:Michal Holesa <xholesm00> Adrian Stanik <xstania00>
+# @author Michal Holesa <xholesm00> Adrian Stanik <xstania00>
 #
-# Graphical user interface implementation
+# Graphical user interface implementation using PyQt5.
 ############################################################################
 
 import sys
-import re
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
-                             QVBoxLayout, QGridLayout, QLineEdit, 
-                             QPushButton, QMessageBox, QAction, QLabel)
+                             QVBoxLayout, QGridLayout, QTextEdit, 
+                             QPushButton, QMessageBox, QAction)
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QTextCursor
 
-# Import infix to post logic from infixtopost.py
 from infixtopost import InfixToPostFix, eval_postfix
 
-## template for testing PyInstaller
-class CalculatorWindow(QMainWindow):
+##
+#@brief Main window class for the INTERCALCULATOR application.
+# Inherits from QMainWindow to provide a standard application window frame.
+#
+class CalculatorGUI(QMainWindow):
+
+    ##
+    #@brief Initializes the main calculator window, setting its title and size.
+    #@return None
+    #@param self instance reference
+    #
     def __init__(self):
         super().__init__()
-        self.init_ui()
+        self.setWindowTitle("INTERCALCULATOR")
+        self.setFixedSize(600, 750)
+        self.initUI()
 
-    def init_ui(self):
-        self.setWindowTitle('IVS Calculator 2026 - Test')
-        self.resize(400, 300)
+    ##
+    #@brief Constructs the user interface.
+    #@return None
+    #@param self instance reference
+    #
+    def initUI(self):
+        menubar = self.menuBar()
 
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
+        help_action = QAction('Guide', self)
+        help_action.triggered.connect(self.show_help)
+        menubar.addAction(help_action)
 
-        layout = QVBoxLayout()
-        central_widget.setLayout(layout)
+        info_action = QAction('About', self)
+        info_action.triggered.connect(self.show_info)
+        menubar.addAction(info_action)
 
-        test_label = QLabel("test")
-        test_label.setAlignment(Qt.AlignCenter)
-        test_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #333;")
-        layout.addWidget(test_label)
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        
+        self.layout = QVBoxLayout()
+        self.central_widget.setLayout(self.layout)
 
-def main():
+        self.display = QTextEdit()
+        self.display.setFixedHeight(100)
+        self.display.setReadOnly(True)
+        self.display.setFont(QFont("Arial", 28))
+        self.display.setLineWrapMode(QTextEdit.NoWrap)
+        
+        self.display.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.display.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.display.setAlignment(Qt.AlignRight)
+        
+        self.layout.addWidget(self.display)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
+        self.layout.addLayout(self.grid)
+
+        buttons = {
+            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqrt': (0, 4),
+            '7': (1, 0), '8': (1, 1), '9': (1, 2), '/': (1, 3), 'ln': (1, 4),
+            '4': (2, 0), '5': (2, 1), '6': (2, 2), '*': (2, 3), 'fac': (2, 4),
+            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), '^': (3, 4),
+            '0': (4, 0), '.': (4, 1), '=': (4, 2), '+': (4, 3), '%': (4, 4),
+        }
+
+        for btn_text, pos in buttons.items():
+            btn = QPushButton(btn_text)
+            btn.setFixedSize(105, 95)
+            btn.setFont(QFont("Arial", 22))
+            
+            if btn_text in ['C', 'DEL']:
+                btn.setProperty("btnClass", "control")
+            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '=', '(', ')']:
+                btn.setProperty("btnClass", "operator")
+            else:
+                btn.setProperty("btnClass", "number")
+
+            btn.clicked.connect(lambda checked, t=btn_text: self.on_button_click(t))
+
+            self.grid.addWidget(btn, pos[0], pos[1])
+
+        self.setStyleSheet("""
+            QPushButton { border-radius: 8px; border: 2px solid #ccc; }
+            QPushButton[btnClass="number"] { background-color: #ffffff; }
+            QPushButton[btnClass="number"]:pressed { background-color: #e0e0e0; }
+            QPushButton[btnClass="operator"] { background-color: #d6eaf8; }
+            QPushButton[btnClass="operator"]:pressed { background-color: #aed6f1; }
+            QPushButton[btnClass="control"] { background-color: #fadbd8; }
+            QPushButton[btnClass="control"]:pressed { background-color: #f5b7b1; }
+            QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
+            QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
+        """)
+    ##
+    #@brief Updates the display text and ensures the cursor remains at the end.
+    #@return None
+    #@param self instance reference
+    #@param text The string to output to the calculator display
+    #
+    def update_display(self, text):
+        self.display.setText(text)
+        self.display.setAlignment(Qt.AlignRight)
+    
+        cursor = self.display.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        self.display.setTextCursor(cursor)
+
+    ##
+    #@brief Displays a pop-up dialog box with instructions on how to use the calculator.
+    #@return None
+    #@param self instance reference
+    #
+    def show_help(self):
+        text = (
+            "Simple guide:\n\n"
+            "- Enter the mathematical expression conventionally (infix).\n"
+            "- Single-operand operations (fac, ln): Enter the number first, then the operator. (e.g., '5 fac')\n"
+            "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqrt degree'.\n"
+            "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
+            "- After pressing '=', the expression is evaluated."
+        )
+        QMessageBox.information(self, "Guide", text)
+
+    ##
+    #@brief Displays a pop-up dialog box containing application version and author information.
+    #@return None
+    #@param self instance reference
+    #
+    def show_info(self):
+        text = (
+            "INTERCALCULATOR\n\n"
+            "Version: 1.0.0\n"
+            "\n"
+            "Authors:\n"
+            "• Ha Pham <xphamha00>\n"
+            "• Kristian Duzek <xduzekk00>\n"
+            "• Michal Holesa <xholesm00>\n"
+            "• Adrian Stanik <xstania00>\n"
+            )
+        QMessageBox.information(self, "About", text)
+
+    ##
+    #@brief Handles button click events, updating the display or triggering evaluation.
+    #@return None
+    #@param self instance reference
+    #@param text The label of the button that was clicked
+    #
+    def on_button_click(self, text):
+        curr = self.display.toPlainText()
+
+        if text == 'C':
+            self.display.clear()
+        
+        elif text == 'DEL':
+            self.update_display(curr.rstrip()[:-1].rstrip())
+        
+        elif text == '=':
+            if not curr.strip():
+                return
+            
+            try:
+                eval_string = curr.replace('sqrt', 'sqt')
+                postfix = InfixToPostFix(eval_string)
+                res = eval_postfix(postfix)
+                
+                if res == int(res):
+                    res = int(res)
+                else:
+                    res = round(res, 10)
+                    
+                self.update_display(str(res))
+            
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
+                self.display.clear()
+        
+        else:
+            ops = ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '(', ')']
+            
+            if text in ops:
+                if curr and not curr.endswith(' '):
+                    self.update_display(curr + f" {text} ")
+                else:
+                    self.update_display(curr + f"{text} ")
+            else:
+                self.update_display(curr + text)
+
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = CalculatorWindow()
+    window = CalculatorGUI()
     window.show()
     sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
-##
-#TODO GUI
