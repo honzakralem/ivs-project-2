@@ -43,7 +43,31 @@ class CalculatorGUI(QMainWindow):
     #@param self instance reference
     #
     def initUI(self):
-        pass
+        menubar = self.menuBar()
+
+        help_action = QAction('Guide', self)
+        menubar.addAction(help_action)
+
+        info_action = QAction('About', self)
+        menubar.addAction(info_action)
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        
+        self.layout = QVBoxLayout()
+        self.central_widget.setLayout(self.layout)
+
+        self.display = QTextEdit()
+        self.display.setFixedHeight(100)
+        self.display.setReadOnly(True)
+        self.display.setFont(QFont("Arial", 28))
+        self.display.setLineWrapMode(QTextEdit.NoWrap)
+        
+        self.display.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.display.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.display.setAlignment(Qt.AlignRight)
+        
+        self.layout.addWidget(self.display)
 
 
 if __name__ == "__main__":
