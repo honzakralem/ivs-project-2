@@ -1,0 +1,102 @@
+name: Build OS Installers
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-installers:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: Calculator-Linux.deb
+          - os: windows-latest
+            artifact_name: Calculator-Windows-Setup.exe
+          - os: macos-latest
+            artifact_name: Calculator-macOS.dmg
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install PyInstaller and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build Executable with PyInstaller
+        run: |
+          pyinstaller --noconfirm --onefile --windowed --name "Calculator" gui.py
+
+      # ==========================================
+      # LINUX: Create a .deb package
+      # ==========================================
+      - name: Create Linux .deb installer
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install -y rubygems
+          sudo gem install fpm
+          mkdir -p package_root/usr/local/bin
+          cp dist/Calculator package_root/usr/local/bin/
+          fpm -s dir -t deb -n "calculator" -v 1.0.0 -C package_root .
+          mv calculator_1.0.0_amd64.deb Calculator-Linux.deb
+
+      # ==========================================
+      # WINDOWS: Create a Setup Installer
+      # ==========================================
+      - name: Create Windows Setup Installer (Inno Setup)
+        if: matrix.os == 'windows-latest'
+        run: |
+          # Inno Setup is pre-installed on GitHub Actions windows runners.
+          # We generate a simple script to bundle the PyInstaller .exe into an installer.
+          echo '[Setup]' > installer.iss
+          echo 'AppName=Calculator' >> installer.iss
+          echo 'AppVersion=1.0' >> installer.iss
+          echo 'DefaultDirName={autopf}\Calculator' >> installer.iss
+          echo 'OutputDir=.' >> installer.iss
+          echo 'OutputBaseFilename=Calculator-Windows-Setup' >> installer.iss
+          echo 'Compression=lzma' >> installer.iss
+          echo 'SolidCompression=yes' >> installer.iss
+          echo '[Files]' >> installer.iss
+          echo 'Source: "dist\Calculator.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
+          echo '[Icons]' >> installer.iss
+          echo 'Name: "{autoprograms}\Calculator"; Filename: "{app}\Calculator.exe"' >> installer.iss
+
+          # Compile the installer
+          iscc installer.iss
+
+      # ==========================================
+      # MACOS: Create a .dmg image
+      # ==========================================
+      - name: Create macOS .dmg installer
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install create-dmg
+          # PyInstaller creates a .app bundle for macOS when using --windowed
+          create-dmg \
+            --volname "Calculator Installer" \
+            --window-pos 200 120 \
+            --window-size 600 300 \
+            --icon-size 100 \
+            --app-drop-link 425 120 \
+            "Calculator-macOS.dmg" \
+            "dist/Calculator.app"
+
+      # ==========================================
+      # UPLOAD ARTIFACTS
+      # ==========================================
+      - name: Upload Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}
