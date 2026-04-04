@@ -155,6 +155,51 @@ class CalculatorGUI(QMainWindow):
             )
         QMessageBox.information(self, "About", text)
 
+    ##
+    #@brief Handles button click events, updating the display or triggering evaluation.
+    #@return None
+    #@param self instance reference
+    #@param text The label of the button that was clicked
+    #
+    def on_button_click(self, text):
+        curr = self.display.toPlainText()
+
+        if text == 'C':
+            self.display.clear()
+        
+        elif text == 'DEL':
+            self.update_display(curr.rstrip()[:-1].rstrip())
+        
+        elif text == '=':
+            if not curr.strip():
+                return
+            
+            try:
+                postfix = InfixToPostFix(curr)
+                res = eval_postfix(postfix)
+                
+                if res == int(res):
+                    res = int(res)
+                else:
+                    res = round(res, 10)
+                    
+                self.update_display(str(res))
+            
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
+                self.display.clear()
+        
+        else:
+            ops = ['+', '-', '*', '/', '%', '^', 'sqt', 'ln', 'fac', '(', ')']
+            
+            if text in ops:
+                if curr and not curr.endswith(' '):
+                    self.update_display(curr + f" {text} ")
+                else:
+                    self.update_display(curr + f"{text} ")
+            else:
+                self.update_display(curr + text)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
