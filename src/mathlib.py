@@ -51,7 +51,13 @@ def div(a,b):
         raise ZeroDivisionError
     else:
         return a/b
-    
+
+def mod(a,b):
+    if b == 0:
+        raise ZeroDivisionError
+    else:
+        return a % b
+
 ##
 #@brief Calculates power
 #@return Power of the base to the exponent
