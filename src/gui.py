@@ -19,7 +19,6 @@ from PyQt5.QtGui import QFont, QTextCursor
 
 from infixtopost import InfixToPostFix, eval_postfix
 
-
 ##
 #@brief Main window class for the INTERCALCULATOR application.
 # Inherits from QMainWindow to provide a standard application window frame.
@@ -75,7 +74,7 @@ class CalculatorGUI(QMainWindow):
         self.layout.addLayout(self.grid)
 
         buttons = {
-            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqt': (0, 4),
+            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqrt': (0, 4),
             '7': (1, 0), '8': (1, 1), '9': (1, 2), '/': (1, 3), 'ln': (1, 4),
             '4': (2, 0), '5': (2, 1), '6': (2, 2), '*': (2, 3), 'fac': (2, 4),
             '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), '^': (3, 4),
@@ -89,7 +88,7 @@ class CalculatorGUI(QMainWindow):
             
             if btn_text in ['C', 'DEL']:
                 btn.setProperty("btnClass", "control")
-            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqt', 'ln', 'fac', '=', '(', ')']:
+            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '=', '(', ')']:
                 btn.setProperty("btnClass", "operator")
             else:
                 btn.setProperty("btnClass", "number")
@@ -133,7 +132,7 @@ class CalculatorGUI(QMainWindow):
             "Simple guide:\n\n"
             "- Enter the mathematical expression conventionally (infix).\n"
             "- Single-operand operations (fac, ln): Enter the number first, then the operator. (e.g., '5 fac')\n"
-            "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqt degree'.\n"
+            "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqrt degree'.\n"
             "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "- After pressing '=', the expression is evaluated."
         )
@@ -177,6 +176,7 @@ class CalculatorGUI(QMainWindow):
                 return
             
             try:
+                eval_string = curr.replace('sqrt', 'sqt')
                 postfix = InfixToPostFix(curr)
                 res = eval_postfix(postfix)
                 
@@ -192,7 +192,7 @@ class CalculatorGUI(QMainWindow):
                 self.display.clear()
         
         else:
-            ops = ['+', '-', '*', '/', '%', '^', 'sqt', 'ln', 'fac', '(', ')']
+            ops = ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '(', ')']
             
             if text in ops:
                 if curr and not curr.endswith(' '):
