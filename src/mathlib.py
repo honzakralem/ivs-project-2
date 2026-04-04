@@ -52,6 +52,13 @@ def div(a,b):
     else:
         return a/b
 
+##
+#@brief Calculates the modulo of two numbers
+#@return Remainder of the division of a by b
+#@param a dividend
+#@param b divisor
+#@exception ZeroDivisionError in case b == 0
+#
 def mod(a,b):
     if b == 0:
         raise ZeroDivisionError
