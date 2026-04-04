@@ -46,9 +46,11 @@ class CalculatorGUI(QMainWindow):
         menubar = self.menuBar()
 
         help_action = QAction('Guide', self)
+        help_action.triggered.connect(self.show_help)
         menubar.addAction(help_action)
 
         info_action = QAction('About', self)
+        info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
         self.central_widget = QWidget()
@@ -105,6 +107,53 @@ class CalculatorGUI(QMainWindow):
             QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
         """)
+        ##
+        #@brief Updates the display text and ensures the cursor remains at the end.
+        #@return None
+        #@param self instance reference
+        #@param text The string to output to the calculator display
+        #
+        def update_display(self, text):
+            self.display.setText(text)
+            self.display.setAlignment(Qt.AlignRight)
+        
+            cursor = self.display.textCursor()
+            cursor.movePosition(QTextCursor.End)
+            self.display.setTextCursor(cursor)
+
+        ##
+        #@brief Displays a pop-up dialog box with instructions on how to use the calculator.
+        #@return None
+        #@param self instance reference
+        #
+        def show_help(self):
+            text = (
+                "Simple guide:\n\n"
+                "- Enter the mathematical expression conventionally (infix).\n"
+                "- Single-operand operations (fac, ln): Enter the number first, then the operator. (e.g., '5 fac')\n"
+                "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqt degree'.\n"
+                "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
+                "- After pressing '=', the expression is evaluated."
+            )
+            QMessageBox.information(self, "Guide", text)
+
+        ##
+        #@brief Displays a pop-up dialog box containing application version and author information.
+        #@return None
+        #@param self instance reference
+        #
+        def show_info(self):
+            text = (
+                "INTERCALCULATOR\n\n"
+                "Version: 0.0.2\n"
+                "\n\n"
+                "Authors:\n"
+                "• Ha Pham <xphamha00>\n"
+                "• Kristian Duzek <xduzekk00>\n"
+                "• Michal Holesa <xholesm00>\n"
+                "• Adrian Stanik <xstania00>\n"
+                )
+            QMessageBox.information(self, "About", text)
 
 
 if __name__ == "__main__":
