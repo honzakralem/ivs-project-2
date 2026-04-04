@@ -20,4 +20,5 @@ from PyQt5.QtCore import Qt
 # Import infix to post logic from infixtopost.py
 from infixtopost import InfixToPostFix, eval_postfix
 
+# template
 #TODO GUI
