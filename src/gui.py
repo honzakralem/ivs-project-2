@@ -68,6 +68,43 @@ class CalculatorGUI(QMainWindow):
         self.display.setAlignment(Qt.AlignRight)
         
         self.layout.addWidget(self.display)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
+        self.layout.addLayout(self.grid)
+
+        buttons = {
+            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqt': (0, 4),
+            '7': (1, 0), '8': (1, 1), '9': (1, 2), '/': (1, 3), 'ln': (1, 4),
+            '4': (2, 0), '5': (2, 1), '6': (2, 2), '*': (2, 3), 'fac': (2, 4),
+            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), '^': (3, 4),
+            '0': (4, 0), '.': (4, 1), '=': (4, 2), '+': (4, 3), '%': (4, 4),
+        }
+
+        for btn_text, pos in buttons.items():
+            btn = QPushButton(btn_text)
+            btn.setFixedSize(105, 95)
+            btn.setFont(QFont("Arial", 22))
+            
+            if btn_text in ['C', 'DEL']:
+                btn.setProperty("btnClass", "control")
+            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqt', 'ln', 'fac', '=', '(', ')']:
+                btn.setProperty("btnClass", "operator")
+            else:
+                btn.setProperty("btnClass", "number")
+
+            self.grid.addWidget(btn, pos[0], pos[1])
+
+        self.setStyleSheet("""
+            QPushButton { border-radius: 8px; border: 2px solid #ccc; }
+            QPushButton[btnClass="number"] { background-color: #ffffff; }
+            QPushButton[btnClass="number"]:pressed { background-color: #e0e0e0; }
+            QPushButton[btnClass="operator"] { background-color: #d6eaf8; }
+            QPushButton[btnClass="operator"]:pressed { background-color: #aed6f1; }
+            QPushButton[btnClass="control"] { background-color: #fadbd8; }
+            QPushButton[btnClass="control"]:pressed { background-color: #f5b7b1; }
+            QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
+            QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
+        """)
 
 
 if __name__ == "__main__":
