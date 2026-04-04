@@ -94,6 +94,8 @@ class CalculatorGUI(QMainWindow):
             else:
                 btn.setProperty("btnClass", "number")
 
+            btn.clicked.connect(lambda checked, t=btn_text: self.on_button_click(t))
+
             self.grid.addWidget(btn, pos[0], pos[1])
 
         self.setStyleSheet("""
