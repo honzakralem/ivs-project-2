@@ -91,3 +91,13 @@ def fac(n):
         raise ValueError("Factorial is not defined for negative numbers")
     
     return math.factorial(n)
+
+##
+# @brief      Calculates natural log 
+# @param      a the input number (non-negative integer including zero)
+# @exception  ValueError if a is negative or zero
+# @return     natural log of a
+def ln(a):
+    if a <= 0:
+        raise (ValueError)("a cannot be less than 0 OR == 0")
+    return math.log(a)

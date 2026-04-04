@@ -120,7 +120,11 @@ def eval_postfix(postfix_string):
                     operand2 = float(operands_stack.pop())
                     result = div(operand2,operand1)
                     operands_stack.append(result)
-        
+                case "^":
+                    operand1 = float(operands_stack.pop())
+                    operand2 = float(operands_stack.pop())
+                    result = pow(operand2,operand1) 
+                    operands_stack.append(result)
     final_result = float(operands_stack.pop())
     return final_result
 
