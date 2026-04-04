@@ -26,7 +26,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.14"
 
       - name: Install PyInstaller and dependencies
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: |
-          pyinstaller --noconfirm --onefile --windowed --name "Calculator" gui.py
+          pyinstaller --noconfirm --onefile --windowed --name "Calculator" src/gui.py
 
       # ==========================================
       # LINUX: Create a .deb package
