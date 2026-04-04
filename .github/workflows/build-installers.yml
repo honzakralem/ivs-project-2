@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: IVS-Calculator-Linux.deb
+            artifact_name: INTERCALCULATOR-Linux.deb
           - os: windows-latest
-            artifact_name: IVS-Calculator-Windows-Setup.exe
+            artifact_name: INTERCALCULATOR-Windows-Setup.exe
           - os: macos-latest
-            artifact_name: IVS-Calculator-macOS.dmg
+            artifact_name: INTERCALCULATOR-macOS.dmg
 
     runs-on: ${{ matrix.os }}
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: |
-          pyinstaller --noconfirm --onefile --windowed --name "IVS Calculator" src/gui.py
+          pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" src/gui.py
 
       # ==========================================
       # LINUX: Create a .deb package
@@ -53,22 +53,22 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           mkdir -p package_root/usr/local/bin
-          cp "dist/IVS Calculator" package_root/usr/local/bin/ivs-calculator
-          chmod +x package_root/usr/local/bin/ivs-calculator
+          cp "dist/INTERCALCULATOR" package_root/usr/local/bin/intercalculator
+          chmod +x package_root/usr/local/bin/intercalculator
           
           mkdir -p package_root/usr/share/applications
-          cat <<EOF > package_root/usr/share/applications/ivs-calculator.desktop
+          cat <<EOF > package_root/usr/share/applications/intercalculator.desktop
           [Desktop Entry]
           Type=Application
-          Name=IVS Calculator $VER
-          Exec=/usr/local/bin/ivs-calculator
+          Name=INTERCALCULATOR $VER
+          Exec=/usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
           EOF
           
-          fpm -s dir -t deb -n "ivs-calculator" -v "$VER" -C package_root .
+          fpm -s dir -t deb -n "intercalculator" -v "$VER" -C package_root .
           
-          mv ivs-calculator_${VER}_amd64.deb IVS-Calculator-Linux.deb
+          mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Linux.deb
 
       # ==========================================
       # WINDOWS: Create a Setup Installer
@@ -80,18 +80,18 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
           
           echo '[Setup]' > installer.iss
-          echo 'AppName=IVS Calculator' >> installer.iss
+          echo 'AppName=INTERCALCULATOR' >> installer.iss
           echo "AppVersion=$VER" >> installer.iss
-          echo "UninstallDisplayName=IVS Calculator $VER" >> installer.iss
-          echo 'DefaultDirName={autopf}\IVS Calculator' >> installer.iss
+          echo "UninstallDisplayName=INTERCALCULATOR $VER" >> installer.iss
+          echo 'DefaultDirName={autopf}\INTERCALCULATOR' >> installer.iss
           echo 'OutputDir=.' >> installer.iss
-          echo 'OutputBaseFilename=IVS-Calculator-Windows-Setup' >> installer.iss
+          echo 'OutputBaseFilename=INTERCALCULATOR-Windows-Setup' >> installer.iss
           echo 'Compression=lzma' >> installer.iss
           echo 'SolidCompression=yes' >> installer.iss
           echo '[Files]' >> installer.iss
-          echo 'Source: "dist\IVS Calculator.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
+          echo 'Source: "dist\INTERCALCULATOR.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
           echo '[Icons]' >> installer.iss
-          echo 'Name: "{autoprograms}\IVS Calculator"; Filename: "{app}\IVS Calculator.exe"' >> installer.iss
+          echo 'Name: "{autoprograms}\INTERCALCULATOR"; Filename: "{app}\INTERCALCULATOR.exe"' >> installer.iss
 
           iscc installer.iss
 
@@ -104,16 +104,16 @@ jobs:
           brew install create-dmg
           VER=$(cat VERSION | tr -d '\n\r ')
 
-          mv "dist/IVS Calculator.app" "dist/IVS Calculator $VER.app"
+          mv "dist/INTERCALCULATOR.app" "dist/INTERCALCULATOR $VER.app"
           
           create-dmg \
-            --volname "IVS Calculator v$VER Installer" \
+            --volname "INTERCALCULATOR v$VER Installer" \
             --window-pos 200 120 \
             --window-size 600 300 \
             --icon-size 100 \
             --app-drop-link 425 120 \
-            "IVS-Calculator-macOS.dmg" \
-            "dist/IVS Calculator.app"
+            "INTERCALCULATOR-macOS.dmg" \
+            "dist/INTERCALCULATOR.app"
 
       # ==========================================
       # UPLOAD ARTIFACTS
@@ -163,6 +163,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.check_version.outputs.version }}
-          name: IVS Calculator v${{ steps.check_version.outputs.version }}
+          name: INTERCALCULATOR v${{ steps.check_version.outputs.version }}
           generate_release_notes: true
           files: release_assets/*
