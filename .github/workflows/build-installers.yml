@@ -35,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.14" 
+          python-version: "3.14"
 
       - name: Install PyInstaller and dependencies
         run: |
@@ -55,13 +55,13 @@ jobs:
         run: |
           sudo apt-get install -y rubygems
           sudo gem install fpm
-          
+
           VER=$(cat VERSION | tr -d '\n\r ')
-          
+
           mkdir -p package_root/usr/local/bin
           cp "dist/INTERCALCULATOR" package_root/usr/local/bin/intercalculator
           chmod +x package_root/usr/local/bin/intercalculator
-          
+
           mkdir -p package_root/usr/share/applications
           cat <<EOF > package_root/usr/share/applications/intercalculator.desktop
           [Desktop Entry]
@@ -71,12 +71,12 @@ jobs:
           Terminal=false
           Categories=Utility;Calculator;
           EOF
-          
+
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
             -d "libxcb-icccm4" \
             -d "libxcb-keysyms1" \
             -C package_root .
-          
+
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
 
       # ==========================================
@@ -88,13 +88,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y rubygems rpm
           sudo gem install fpm
-          
+
           VER=$(cat VERSION | tr -d '\n\r ')
-          
+
           mkdir -p package_root/usr/local/bin
           cp "dist/INTERCALCULATOR" package_root/usr/local/bin/intercalculator
           chmod +x package_root/usr/local/bin/intercalculator
-          
+
           mkdir -p package_root/usr/share/applications
           cat <<EOF > package_root/usr/share/applications/intercalculator.desktop
           [Desktop Entry]
@@ -104,9 +104,9 @@ jobs:
           Terminal=false
           Categories=Utility;Calculator;
           EOF
-          
+
           fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
-          
+
           mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
       # ==========================================
@@ -117,7 +117,7 @@ jobs:
         shell: bash
         run: |
           VER=$(cat VERSION | tr -d '\n\r ')
-          
+
           echo '[Setup]' > installer.iss
           echo 'AppName=INTERCALCULATOR' >> installer.iss
           echo "AppVersion=$VER" >> installer.iss
@@ -127,10 +127,19 @@ jobs:
           echo 'OutputBaseFilename=INTERCALCULATOR-Windows-Setup' >> installer.iss
           echo 'Compression=lzma' >> installer.iss
           echo 'SolidCompression=yes' >> installer.iss
+
+          # Add Tasks section for the desktop shortcut option
+          echo '[Tasks]' >> installer.iss
+          echo 'Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked' >> installer.iss
+
           echo '[Files]' >> installer.iss
           echo 'Source: "dist\INTERCALCULATOR.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
+
           echo '[Icons]' >> installer.iss
+          # Start menu shortcut
           echo 'Name: "{autoprograms}\INTERCALCULATOR"; Filename: "{app}\INTERCALCULATOR.exe"' >> installer.iss
+          # Desktop shortcut (linked to the task)
+          echo 'Name: "{autodesktop}\INTERCALCULATOR"; Filename: "{app}\INTERCALCULATOR.exe"; Tasks: desktopicon' >> installer.iss
 
           iscc installer.iss
 
@@ -144,7 +153,7 @@ jobs:
           VER=$(cat VERSION | tr -d '\n\r ')
 
           mv "dist/INTERCALCULATOR.app" "dist/INTERCALCULATOR $VER.app"
-          
+
           create-dmg \
             --volname "INTERCALCULATOR v$VER Installer" \
             --window-pos 200 120 \
@@ -170,7 +179,7 @@ jobs:
     name: Create GitHub Release
     needs: build-installers
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
