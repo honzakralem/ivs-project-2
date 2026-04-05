@@ -280,6 +280,7 @@ class CalculatorGUI(QMainWindow):
         
         else:
             ops = ['+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!', '(', ')']
+            binary_ops = ['+', '×', '÷', '%', 'xʸ'] 
 
             if not curr.strip() and text in ['+', '-', '×', '÷', '%', 'xʸ', 'n!', '√']:
                 self.update_display("0")
@@ -290,6 +291,24 @@ class CalculatorGUI(QMainWindow):
             ):
                 self.update_display(curr + '-')
                 return
+            
+            if text == '+' and (
+                not curr.strip() or curr.rstrip().endswith(('('))
+            ):
+                self.update_display(curr + '+')
+                return
+
+            if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', 'n!']):
+                stripped = curr.rstrip()
+
+                if stripped.endswith(('+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!')):
+                    stripped = stripped[:-1].rstrip()
+
+                    if stripped.endswith(('+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!')):
+                        stripped = stripped[:-1].rstrip()
+                        
+                    self.update_display(stripped)
+                    curr = self.display.toPlainText()
 
             if text in ops:
                 if curr and not curr.endswith(' '):
