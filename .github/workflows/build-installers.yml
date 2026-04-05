@@ -45,9 +45,14 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            SEP=";"
+          else
+            SEP=":"
+          fi
           pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
-          --add-data "VERSION;." \
-          src/gui.py
+            --add-data "VERSION${SEP}." \
+            src/gui.py
 
       # ==========================================
       # UBUNTU/DEBIAN: Create a .deb package
