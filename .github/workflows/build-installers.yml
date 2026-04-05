@@ -67,14 +67,16 @@ jobs:
           [Desktop Entry]
           Type=Application
           Name=INTERCALCULATOR $VER
-          Exec=/usr/local/bin/intercalculator
+          Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
           EOF
           
-          fpm -s dir -t deb -n "intercalculator" -v "$VER" -C package_root .
+          fpm -s dir -t deb -n "intercalculator" -v "$VER" \
+            -d "libxcb-xinerama0" \
+            -d "libxcb-cursor0" \
+            -C package_root .
           
-          # fpm creates <name>_<version>_<arch>.deb
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
 
       # ==========================================
@@ -105,7 +107,6 @@ jobs:
           
           fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
           
-          # fpm creates <name>-<version>-1.x86_64.rpm
           mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
       # ==========================================
