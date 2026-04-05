@@ -45,7 +45,9 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: |
-          pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" src/gui.py
+          pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
+          --add-data "VERSION;." \
+          src/gui.py
 
       # ==========================================
       # UBUNTU/DEBIAN: Create a .deb package

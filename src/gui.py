@@ -20,7 +20,11 @@ from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
 from infixtopost import InfixToPostFix, eval_postfix
 
 def read_version():
-    version_path = os.path.join(os.path.dirname(__file__), "..", "VERSION")
+    if getattr(sys, "frozen", False):
+        base_dir = sys._MEIPASS
+    else:
+        base_dir = os.path.dirname(__file__)
+    version_path = os.path.join(base_dir, "VERSION")
     try:
         with open(version_path, "r", encoding="utf-8") as f:
             return f.read().strip()
