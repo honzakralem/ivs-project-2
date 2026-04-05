@@ -285,6 +285,12 @@ class CalculatorGUI(QMainWindow):
                 self.update_display("0")
                 curr = "0"
 
+            if text == '-' and (
+                not curr.strip() or curr.rstrip().endswith(('('))
+            ):
+                self.update_display(curr + '-')
+                return
+
             if text in ops:
                 if curr and not curr.endswith(' '):
                     self.update_display(curr + f" {text} ")
