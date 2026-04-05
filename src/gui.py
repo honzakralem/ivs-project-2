@@ -177,8 +177,8 @@ class CalculatorGUI(QMainWindow):
         text = (
             "Simple guide:\n\n"
             "- Enter the mathematical expression conventionally (infix).\n"
-            "- Single-operand operations (fac, ln): Enter the number first, then the operator. (e.g., '5 fac')\n"
-            "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqrt degree'.\n"
+            "- Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
+            "- Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
             "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "- After pressing '=', the expression is evaluated."
         )
