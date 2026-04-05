@@ -213,7 +213,7 @@ class CalculatorGUI(QMainWindow):
             "• 0-9, +, -, ×, ÷, %, xʸ, (, ) : Standard input\n"
             "• . or , (Comma) : Decimal point\n"
             "• ! (Exclamation) : Factorial (n!)\n"
-            "• S : Square root (√)\n"
+            "• S : Root (x √ y)\n"
             "• L : Natural logarithm (ln)\n"
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
