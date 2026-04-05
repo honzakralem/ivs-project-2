@@ -13,9 +13,9 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
                              QVBoxLayout, QGridLayout, QTextEdit, 
-                             QPushButton, QMessageBox, QAction)
+                             QPushButton, QMessageBox, QAction, QShortcut)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QTextCursor
+from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
 
 from infixtopost import InfixToPostFix, eval_postfix
 
@@ -43,6 +43,7 @@ class CalculatorGUI(QMainWindow):
     #
     def initUI(self):
         menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
 
         help_action = QAction('Guide', self)
         help_action.triggered.connect(self.show_help)
@@ -51,6 +52,10 @@ class CalculatorGUI(QMainWindow):
         info_action = QAction('About', self)
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
+
+        controls_action = QAction('Controls', self)
+        controls_action.triggered.connect(self.show_controls)
+        menubar.addAction(controls_action)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -113,6 +118,35 @@ class CalculatorGUI(QMainWindow):
             QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
         """)
+
+        self.setup_shortcuts()
+
+    ##
+    #@brief Binds keyboard keys to calculator functions.
+    #@return None
+    #@param self instance reference
+    #
+    def setup_shortcuts(self):
+        for key in '0123456789.+-*/%^()':
+            shortcut = QShortcut(QKeySequence(key), self)
+            shortcut.activated.connect(lambda k=key: self.on_button_click(k))
+        
+        special_keys = {
+            Qt.Key_Comma: '.',
+            Qt.Key_Exclam: 'fac',
+            Qt.Key_S: 'sqrt',
+            Qt.Key_L: 'ln',
+            Qt.Key_Enter: '=',
+            Qt.Key_Return: '=',
+            Qt.Key_Backspace: 'DEL',
+            Qt.Key_Escape: 'C',
+            Qt.Key_Delete: 'C'
+        }
+        
+        for key, action in special_keys.items():
+            shortcut = QShortcut(QKeySequence(key), self)
+            shortcut.activated.connect(lambda a=action: self.on_button_click(a))
+
     ##
     #@brief Updates the display text and ensures the cursor remains at the end.
     #@return None
@@ -162,6 +196,25 @@ class CalculatorGUI(QMainWindow):
         QMessageBox.information(self, "About", text)
 
     ##
+    #@brief Displays a pop-up dialog box listing the keyboard shortcuts.
+    #@return None
+    #@param self instance reference
+    #
+    def show_controls(self):
+        text = (
+            "Keyboard Shortcuts:\n\n"
+            "• 0-9, +, -, *, /, %, ^, (, ) : Standard input\n"
+            "• . or , (Comma) : Decimal point\n"
+            "• ! (Exclamation) : Factorial (fac)\n"
+            "• S : Square root (sqrt)\n"
+            "• L : Natural logarithm (ln)\n"
+            "• Enter or Return : Evaluate (=)\n"
+            "• Backspace : Delete last character (DEL)\n"
+            "• Escape or Delete : Clear entire display (C)\n"
+        )
+        QMessageBox.information(self, "Controls", text)
+
+    ##
     #@brief Handles button click events, updating the display or triggering evaluation.
     #@return None
     #@param self instance reference
@@ -174,7 +227,15 @@ class CalculatorGUI(QMainWindow):
             self.display.clear()
         
         elif text == 'DEL':
-            self.update_display(curr.rstrip()[:-1].rstrip())
+            stripped = curr.rstrip()
+            if stripped.endswith('sqrt'):
+                self.update_display(stripped[:-4].rstrip())
+            elif stripped.endswith('fac'):
+                self.update_display(stripped[:-3].rstrip())
+            elif stripped.endswith('ln'):
+                self.update_display(stripped[:-2].rstrip())
+            else:
+                self.update_display(stripped[:-1].rstrip())
         
         elif text == '=':
             if not curr.strip():
