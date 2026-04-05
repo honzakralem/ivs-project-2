@@ -75,6 +75,9 @@ jobs:
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
             -d "libxcb-icccm4" \
             -d "libxcb-keysyms1" \
+            -d "libxcb-xinerama0" \
+            -d "libx11-xcb1" \
+            -d "libxkbcommon-x11-0" \
             -C package_root .
 
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
