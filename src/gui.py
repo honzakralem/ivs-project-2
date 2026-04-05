@@ -230,20 +230,12 @@ class CalculatorGUI(QMainWindow):
     def on_button_click(self, text):
         curr = self.display.toPlainText()
 
-        ui_to_token = {
-            '√': 'sqrt',
-            'n!': 'fac',
-            'xʸ': '^',
-            '×': '*',
-            '÷': '/'
-        }
-
         if text == 'C':
             self.display.clear()
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith('√'):
+            if stripped.endswith(('√', '!', '^', '×', '÷')):
                 self.update_display(stripped[:-1].rstrip())
             elif stripped.endswith('fac'):
                 self.update_display(stripped[:-3].rstrip())
@@ -259,8 +251,8 @@ class CalculatorGUI(QMainWindow):
             try:
                 eval_string = (
                     curr.replace('√', 'sqt')
-                        .replace('n!', 'fac')
-                        .replace('xʸ', '^')
+                        .replace('!', 'fac')
+                        .replace('^', '^')
                         .replace('×', '*')
                         .replace('÷', '/')
                 )
@@ -279,10 +271,15 @@ class CalculatorGUI(QMainWindow):
                 self.display.clear()
         
         else:
-            ops = ['+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!', '(', ')']
-            binary_ops = ['+', '×', '÷', '%', 'xʸ'] 
+            if text == 'xʸ':
+                text = '^'
+            elif text == 'n!':
+                text = '!'
 
-            if not curr.strip() and text in ['+', '-', '×', '÷', '%', 'xʸ', 'n!', '√']:
+            ops = ['+', '-', '×', '÷', '%', '^', '√', 'ln', '!', '(', ')']
+            binary_ops = ['+', '×', '÷', '%', '^']
+
+            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!', '√']:
                 self.update_display("0")
                 curr = "0"
 
@@ -298,15 +295,15 @@ class CalculatorGUI(QMainWindow):
                 self.update_display(curr + '+')
                 return
 
-            if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', 'n!']):
+            if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
                 stripped = curr.rstrip()
 
-                if stripped.endswith(('+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!')):
+                if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
                     stripped = stripped[:-1].rstrip()
 
-                    if stripped.endswith(('+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!')):
+                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
                         stripped = stripped[:-1].rstrip()
-                        
+
                     self.update_display(stripped)
                     curr = self.display.toPlainText()
 
