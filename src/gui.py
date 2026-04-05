@@ -43,6 +43,7 @@ class CalculatorGUI(QMainWindow):
     #
     def initUI(self):
         menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
 
         help_action = QAction('Guide', self)
         help_action.triggered.connect(self.show_help)
