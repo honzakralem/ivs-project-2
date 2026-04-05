@@ -294,6 +294,15 @@ class CalculatorGUI(QMainWindow):
             ):
                 self.update_display(curr + '+')
                 return
+            
+            if text == '√' and (
+                not curr.strip() or curr.rstrip().endswith(('(', '+', '-', '×', '÷', '%', '^'))
+            ):
+                if curr and not curr.endswith(' '):
+                    self.update_display(curr + " 2 √ ")
+                else:
+                    self.update_display(curr + "2 √ ")
+                return
 
             if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
                 stripped = curr.rstrip()
