@@ -129,12 +129,19 @@ class CalculatorGUI(QMainWindow):
     def setup_shortcuts(self):
         for key in '0123456789.+-*/%^()':
             shortcut = QShortcut(QKeySequence(key), self)
-            shortcut.activated.connect(lambda k=key: self.on_button_click(k))
-        
+            if key == '*':
+                shortcut.activated.connect(lambda k='×': self.on_button_click(k))
+            elif key == '/':
+                shortcut.activated.connect(lambda k='÷': self.on_button_click(k))
+            elif key == '^':
+                shortcut.activated.connect(lambda k='xʸ': self.on_button_click(k))
+            else:
+                shortcut.activated.connect(lambda k=key: self.on_button_click(k))
+
         special_keys = {
             Qt.Key_Comma: '.',
-            Qt.Key_Exclam: 'fac',
-            Qt.Key_S: 'sqrt',
+            Qt.Key_Exclam: 'n!',     
+            Qt.Key_S: '√',
             Qt.Key_L: 'ln',
             Qt.Key_Enter: '=',
             Qt.Key_Return: '=',
@@ -142,7 +149,7 @@ class CalculatorGUI(QMainWindow):
             Qt.Key_Escape: 'C',
             Qt.Key_Delete: 'C'
         }
-        
+
         for key, action in special_keys.items():
             shortcut = QShortcut(QKeySequence(key), self)
             shortcut.activated.connect(lambda a=action: self.on_button_click(a))
@@ -203,10 +210,10 @@ class CalculatorGUI(QMainWindow):
     def show_controls(self):
         text = (
             "Keyboard Shortcuts:\n\n"
-            "• 0-9, +, -, *, /, %, ^, (, ) : Standard input\n"
+            "• 0-9, +, -, ×, ÷, %, xʸ, (, ) : Standard input\n"
             "• . or , (Comma) : Decimal point\n"
-            "• ! (Exclamation) : Factorial (fac)\n"
-            "• S : Square root (sqrt)\n"
+            "• ! (Exclamation) : Factorial (n!)\n"
+            "• S : Square root (√)\n"
             "• L : Natural logarithm (ln)\n"
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
