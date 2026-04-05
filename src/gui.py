@@ -79,10 +79,10 @@ class CalculatorGUI(QMainWindow):
         self.layout.addLayout(self.grid)
 
         buttons = {
-            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqrt': (0, 4),
-            '7': (1, 0), '8': (1, 1), '9': (1, 2), '/': (1, 3), 'ln': (1, 4),
-            '4': (2, 0), '5': (2, 1), '6': (2, 2), '*': (2, 3), 'fac': (2, 4),
-            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), '^': (3, 4),
+            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), '√': (0, 4),
+            '7': (1, 0), '8': (1, 1), '9': (1, 2), '÷': (1, 3), 'ln': (1, 4),
+            '4': (2, 0), '5': (2, 1), '6': (2, 2), '×': (2, 3), 'n!': (2, 4),
+            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), 'xʸ': (3, 4),
             '0': (4, 0), '.': (4, 1), '=': (4, 2), '+': (4, 3), '%': (4, 4),
         }
 
@@ -223,6 +223,14 @@ class CalculatorGUI(QMainWindow):
     def on_button_click(self, text):
         curr = self.display.toPlainText()
 
+        ui_to_token = {
+            '√': 'sqrt',
+            'n!': 'fac',
+            'xʸ': '^',
+            '×': '*',
+            '÷': '/'
+        }
+
         if text == 'C':
             self.display.clear()
         
@@ -242,7 +250,13 @@ class CalculatorGUI(QMainWindow):
                 return
             
             try:
-                eval_string = curr.replace('√', 'sqrt').replace('sqrt', 'sqt')
+                eval_string = (
+                    curr.replace('√', 'sqrt')
+                        .replace('n!', 'fac')
+                        .replace('xʸ', '^')
+                        .replace('×', '*')
+                        .replace('÷', '/')
+                )
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
