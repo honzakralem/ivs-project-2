@@ -226,7 +226,15 @@ class CalculatorGUI(QMainWindow):
             self.display.clear()
         
         elif text == 'DEL':
-            self.update_display(curr.rstrip()[:-1].rstrip())
+            stripped = curr.rstrip()
+            if stripped.endswith('sqrt'):
+                self.update_display(stripped[:-4].rstrip())
+            elif stripped.endswith('fac'):
+                self.update_display(stripped[:-3].rstrip())
+            elif stripped.endswith('ln'):
+                self.update_display(stripped[:-2].rstrip())
+            else:
+                self.update_display(stripped[:-1].rstrip())
         
         elif text == '=':
             if not curr.strip():
