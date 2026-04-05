@@ -228,8 +228,8 @@ class CalculatorGUI(QMainWindow):
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith('sqrt'):
-                self.update_display(stripped[:-4].rstrip())
+            if stripped.endswith('√'):
+                self.update_display(stripped[:-1].rstrip())
             elif stripped.endswith('fac'):
                 self.update_display(stripped[:-3].rstrip())
             elif stripped.endswith('ln'):
@@ -242,7 +242,7 @@ class CalculatorGUI(QMainWindow):
                 return
             
             try:
-                eval_string = curr.replace('sqrt', 'sqt')
+                eval_string = curr.replace('√', 'sqrt').replace('sqrt', 'sqt')
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
@@ -259,8 +259,15 @@ class CalculatorGUI(QMainWindow):
         
         else:
             ops = ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '(', ')']
-            
-            if text in ops:
+
+            if text == 'sqrt':
+                text = '√'
+
+            if not curr.strip() and text in ['+', '-', '*', '/', '%', '^', 'fac', '√']:
+                self.update_display("0")
+                curr = "0"
+
+            if text in ops or text == '√':
                 if curr and not curr.endswith(' '):
                     self.update_display(curr + f" {text} ")
                 else:
