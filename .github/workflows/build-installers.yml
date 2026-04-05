@@ -73,8 +73,8 @@ jobs:
           EOF
           
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
-            -d "libxcb-xinerama0" \
-            -d "libxcb-cursor0" \
+            -d "libxcb-icccm4" \
+            -d "libxcb-keysyms1" \
             -C package_root .
           
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
