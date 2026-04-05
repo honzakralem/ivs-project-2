@@ -93,7 +93,7 @@ class CalculatorGUI(QMainWindow):
             
             if btn_text in ['C', 'DEL']:
                 btn.setProperty("btnClass", "control")
-            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '=', '(', ')']:
+            elif btn_text in ['+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!', '=', '(', ')']:
                 btn.setProperty("btnClass", "operator")
             else:
                 btn.setProperty("btnClass", "number")
@@ -251,7 +251,7 @@ class CalculatorGUI(QMainWindow):
             
             try:
                 eval_string = (
-                    curr.replace('√', 'sqrt')
+                    curr.replace('√', 'sqt')
                         .replace('n!', 'fac')
                         .replace('xʸ', '^')
                         .replace('×', '*')
@@ -272,16 +272,13 @@ class CalculatorGUI(QMainWindow):
                 self.display.clear()
         
         else:
-            ops = ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '(', ')']
+            ops = ['+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!', '(', ')']
 
-            if text == 'sqrt':
-                text = '√'
-
-            if not curr.strip() and text in ['+', '-', '*', '/', '%', '^', 'fac', '√']:
+            if not curr.strip() and text in ['+', '-', '×', '÷', '%', 'xʸ', 'n!', '√']:
                 self.update_display("0")
                 curr = "0"
 
-            if text in ops or text == '√':
+            if text in ops:
                 if curr and not curr.endswith(' '):
                     self.update_display(curr + f" {text} ")
                 else:
