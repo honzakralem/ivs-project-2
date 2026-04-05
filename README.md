@@ -6,14 +6,14 @@
 - Windows 64-bit
 - macOS 64-bit
 
-**Na projektu se podíleli tito studenti:**
+## AUTOŘI
 
-TEAM INTERNATION
+**TEAM INTERNATIONATIONAL**
 
-*Ha Pham - xphamha00
-*Michal Holeša - xholesm00
-*Kristián Dúžek - xduzekk00
-*Adrián Stánik - xstania00
+- Ha Pham - xphamha00
+- Michal Holeša - xholesm00
+- Kristián Dúžek - xduzekk00
+- Adrián Stánik - xstania00
 
 ## PRO VÝVOJÁŘE
 Doporučuje se přečíst [manuál pro programátory](src/doc/IVS2_prog_man.pdf). Je často aktualizován a je v něm uvedeno pro jakou verzi a datum je aktuální.
