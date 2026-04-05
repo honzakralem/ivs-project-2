@@ -79,10 +79,10 @@ class CalculatorGUI(QMainWindow):
         self.layout.addLayout(self.grid)
 
         buttons = {
-            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), 'sqrt': (0, 4),
-            '7': (1, 0), '8': (1, 1), '9': (1, 2), '/': (1, 3), 'ln': (1, 4),
-            '4': (2, 0), '5': (2, 1), '6': (2, 2), '*': (2, 3), 'fac': (2, 4),
-            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), '^': (3, 4),
+            'C': (0, 0), 'DEL': (0, 1), '(': (0, 2), ')': (0, 3), '√': (0, 4),
+            '7': (1, 0), '8': (1, 1), '9': (1, 2), '÷': (1, 3), 'ln': (1, 4),
+            '4': (2, 0), '5': (2, 1), '6': (2, 2), '×': (2, 3), 'n!': (2, 4),
+            '1': (3, 0), '2': (3, 1), '3': (3, 2), '-': (3, 3), 'xʸ': (3, 4),
             '0': (4, 0), '.': (4, 1), '=': (4, 2), '+': (4, 3), '%': (4, 4),
         }
 
@@ -93,7 +93,7 @@ class CalculatorGUI(QMainWindow):
             
             if btn_text in ['C', 'DEL']:
                 btn.setProperty("btnClass", "control")
-            elif btn_text in ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '=', '(', ')']:
+            elif btn_text in ['+', '-', '×', '÷', '%', 'xʸ', '√', 'ln', 'n!', '=', '(', ')']:
                 btn.setProperty("btnClass", "operator")
             else:
                 btn.setProperty("btnClass", "number")
@@ -129,12 +129,19 @@ class CalculatorGUI(QMainWindow):
     def setup_shortcuts(self):
         for key in '0123456789.+-*/%^()':
             shortcut = QShortcut(QKeySequence(key), self)
-            shortcut.activated.connect(lambda k=key: self.on_button_click(k))
-        
+            if key == '*':
+                shortcut.activated.connect(lambda k='×': self.on_button_click(k))
+            elif key == '/':
+                shortcut.activated.connect(lambda k='÷': self.on_button_click(k))
+            elif key == '^':
+                shortcut.activated.connect(lambda k='xʸ': self.on_button_click(k))
+            else:
+                shortcut.activated.connect(lambda k=key: self.on_button_click(k))
+
         special_keys = {
             Qt.Key_Comma: '.',
-            Qt.Key_Exclam: 'fac',
-            Qt.Key_S: 'sqrt',
+            Qt.Key_Exclam: 'n!',     
+            Qt.Key_S: '√',
             Qt.Key_L: 'ln',
             Qt.Key_Enter: '=',
             Qt.Key_Return: '=',
@@ -142,7 +149,7 @@ class CalculatorGUI(QMainWindow):
             Qt.Key_Escape: 'C',
             Qt.Key_Delete: 'C'
         }
-        
+
         for key, action in special_keys.items():
             shortcut = QShortcut(QKeySequence(key), self)
             shortcut.activated.connect(lambda a=action: self.on_button_click(a))
@@ -170,8 +177,8 @@ class CalculatorGUI(QMainWindow):
         text = (
             "Simple guide:\n\n"
             "- Enter the mathematical expression conventionally (infix).\n"
-            "- Single-operand operations (fac, ln): Enter the number first, then the operator. (e.g., '5 fac')\n"
-            "- Root operation (sqrt): Behaves like a binary operator, enter in the format 'base sqrt degree'.\n"
+            "- Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
+            "- Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
             "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "- After pressing '=', the expression is evaluated."
         )
@@ -203,10 +210,10 @@ class CalculatorGUI(QMainWindow):
     def show_controls(self):
         text = (
             "Keyboard Shortcuts:\n\n"
-            "• 0-9, +, -, *, /, %, ^, (, ) : Standard input\n"
+            "• 0-9, +, -, ×, ÷, %, xʸ, (, ) : Standard input\n"
             "• . or , (Comma) : Decimal point\n"
-            "• ! (Exclamation) : Factorial (fac)\n"
-            "• S : Square root (sqrt)\n"
+            "• ! (Exclamation) : Factorial (n!)\n"
+            "• S : Root (x √ y)\n"
             "• L : Natural logarithm (ln)\n"
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
@@ -228,8 +235,8 @@ class CalculatorGUI(QMainWindow):
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith('sqrt'):
-                self.update_display(stripped[:-4].rstrip())
+            if stripped.endswith(('√', '!', '^', '×', '÷')):
+                self.update_display(stripped[:-1].rstrip())
             elif stripped.endswith('fac'):
                 self.update_display(stripped[:-3].rstrip())
             elif stripped.endswith('ln'):
@@ -242,7 +249,13 @@ class CalculatorGUI(QMainWindow):
                 return
             
             try:
-                eval_string = curr.replace('sqrt', 'sqt')
+                eval_string = (
+                    curr.replace('√', 'sqt')
+                        .replace('!', 'fac')
+                        .replace('^', '^')
+                        .replace('×', '*')
+                        .replace('÷', '/')
+                )
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
@@ -258,8 +271,51 @@ class CalculatorGUI(QMainWindow):
                 self.display.clear()
         
         else:
-            ops = ['+', '-', '*', '/', '%', '^', 'sqrt', 'ln', 'fac', '(', ')']
+            if text == 'xʸ':
+                text = '^'
+            elif text == 'n!':
+                text = '!'
+
+            ops = ['+', '-', '×', '÷', '%', '^', '√', 'ln', '!', '(', ')']
+            binary_ops = ['+', '×', '÷', '%', '^']
+
+            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!', '√']:
+                self.update_display("0")
+                curr = "0"
+
+            if text == '-' and (
+                not curr.strip() or curr.rstrip().endswith(('('))
+            ):
+                self.update_display(curr + '-')
+                return
             
+            if text == '+' and (
+                not curr.strip() or curr.rstrip().endswith(('('))
+            ):
+                self.update_display(curr + '+')
+                return
+            
+            if text == '√' and (
+                not curr.strip() or curr.rstrip().endswith(('(', '+', '-', '×', '÷', '%', '^'))
+            ):
+                if curr and not curr.endswith(' '):
+                    self.update_display(curr + " 2 √ ")
+                else:
+                    self.update_display(curr + "2 √ ")
+                return
+
+            if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
+                stripped = curr.rstrip()
+
+                if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                    stripped = stripped[:-1].rstrip()
+
+                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                        stripped = stripped[:-1].rstrip()
+
+                    self.update_display(stripped)
+                    curr = self.display.toPlainText()
+
             if text in ops:
                 if curr and not curr.endswith(' '):
                     self.update_display(curr + f" {text} ")
