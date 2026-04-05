@@ -9,7 +9,7 @@
 #
 # Graphical user interface implementation using PyQt5.
 ############################################################################
-
+import os
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
                              QVBoxLayout, QGridLayout, QTextEdit, 
@@ -19,6 +19,14 @@ from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
 
 from infixtopost import InfixToPostFix, eval_postfix
 
+def read_version():
+    version_path = os.path.join(os.path.dirname(__file__), "..", "VERSION")
+    try:
+        with open(version_path, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return "unknown"
+    
 ##
 #@brief Main window class for the INTERCALCULATOR application.
 # Inherits from QMainWindow to provide a standard application window frame.
@@ -190,9 +198,10 @@ class CalculatorGUI(QMainWindow):
     #@param self instance reference
     #
     def show_info(self):
+        version = read_version()
         text = (
             "INTERCALCULATOR\n\n"
-            "Version: 1.0.0\n"
+            f"Version: {version}\n"
             "\n"
             "Authors:\n"
             "• Ha Pham <xphamha00>\n"
