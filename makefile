@@ -1,4 +1,4 @@
-.PHONY: venv rmenv clean all test doc
+.PHONY: venv rmenv clean all test doc help run rmdox
 
 #CONFIGURATION
 VENVNAME=env
@@ -7,7 +7,7 @@ PYTHON=python3
 TESTFILES=src/infixtopost_test.py src/mathlib_test.py
 PATHTODOXYFILE=src/Doxyfile
 PATHTODOCDIR=src/doc
-TOBECLEANED= .pytest_cache
+TOBECLEANED=.pytest_cache src/.pytest_cache __pycache__ src/__pycache__
 
 #Creates virtual environment and downloads all dependencies
 all: 

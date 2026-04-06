@@ -19,16 +19,15 @@ requirements_absolute_path = os.path.abspath("src/requirements.txt")
 print("Starting setup script")
 
 if os_name == "Linux" or os_name == "Darwin":
-    #If venv does not exist
+    # If venv does not exist
     if not os.path.isdir(f"{venv_dir_name}"):
-        subprocess.run(["python3", "-m", "venv",f"{venv_dir_name}"])
+        subprocess.run(["python3", "-m", "venv", f"{venv_dir_name}"])
     subprocess.run([f"{venv_dir_name}/bin/pip", "install", "-r", f"{requirements_absolute_path}"])
 
 else:
-        #If venv does not exist
+    # If venv does not exist
     if not os.path.isdir(f"{venv_dir_name}"):
-        subprocess.run(["python", "-m", "venv",f"{venv_dir_name}"])
+        subprocess.run(["python", "-m", "venv", f"{venv_dir_name}"])
     subprocess.run([f"{venv_dir_name}\\Scripts\\pip", "install", "-r", f"{requirements_absolute_path}"])
-
 
 print("Setup successful!")

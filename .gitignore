@@ -1,2 +1,4 @@
 env
 .pytest_cache
+src/doc/html/
+src/doc/latex/
