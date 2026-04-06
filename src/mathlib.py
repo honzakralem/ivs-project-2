@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-############################################################################
-# @file mathlib.py
-# @brief Math library for IVS calculator 2026
-# @date 12.3.2026
-# @author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
-#
-# Implemenation of calculator functions
-############################################################################
+"""!
+@file mathlib.py
+@brief Math library for IVS calculator 2026, implemenation of calculator functions
+@date 12.3.2026
+@author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+"""
 
 import math
 
@@ -81,6 +79,7 @@ def pow(a,b):
 # @exception  ValueError if b == 0
 # @exception  ValueError if a < 0 and b is even
 # @return     b-th root of a
+#
 def sqt(a,b):
     if b == 0:
         raise ValueError("Root degree cannot be zero")
@@ -97,6 +96,7 @@ def sqt(a,b):
 # @exception  ValueError if n is negative
 # @exception  TypeError if n is not an integer
 # @return     Factorial of n
+#
 def fac(n):
     if not isinstance(n, int):
         raise TypeError("n must be an integer")
@@ -110,6 +110,7 @@ def fac(n):
 # @param      a the input number (non-negative integer including zero)
 # @exception  ValueError if a is negative or zero
 # @return     natural log of a
+#
 def ln(a):
     if a <= 0:
         raise (ValueError)("a cannot be less than 0 OR == 0")
