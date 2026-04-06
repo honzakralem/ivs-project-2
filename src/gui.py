@@ -255,7 +255,7 @@ class CalculatorGUI(QMainWindow):
             elif stripped.endswith('ln'):
                 self.update_display(stripped[:-2].rstrip())
             else:
-                self.update_display(stripped[:-1].rstrip())
+                self.update_display(stripped[:-1])
         
         elif text == '=':
             if not curr.strip():
