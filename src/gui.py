@@ -43,7 +43,8 @@ class CalculatorGUI(QMainWindow):
     #
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("INTERCALCULATOR")
+        version = read_version()
+        self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
         self.initUI()
 
