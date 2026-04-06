@@ -1,8 +1,20 @@
-#!/bin/python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""! 
+@file infixtopost.py
+@brief Conversion of infix expression to a postfix expression
+@date 27.3.2026
+@author Ha Pham <xphamha00>
+"""
 
 from mathlib import *
+
 ##
 #@brief Function to evaluate operator precedence
+#@param operator Operator to be assigned a precendence (value of importance)
+#@return Integerer representing  precedence (0-4)
+#@exception ValueError If operator is unknown
 #
 def eval_precedence(operator):
     if operator == "(": 
@@ -20,6 +32,8 @@ def eval_precedence(operator):
 
 ##
 #@return True if operand is a number
+#@param operand Token to check
+#@return True if operand is a number False otherwise
 #
 def is_operand(operand):
     try: 
@@ -30,7 +44,9 @@ def is_operand(operand):
         return True 
 
 ##
-#@return True if operator is one of +-*/^
+#@brief Checks if a token is a valid operator
+#@param operator Token to check
+#@return True if operator is +,-,*,/,%,^,sqt,fac,ln False otherwise
 #
 def is_operator(operator):
     if operator in "+-*/^%":
@@ -40,7 +56,12 @@ def is_operator(operator):
     else:
         return False
 
-
+##
+#@brief Converts infix expression into postfix expression
+#@param parse_string Infix expression to be transformed to postfix expression
+#@return Expression in postfix form
+#@exception Exception If mismatched parentheses or invalid token found
+#
 def InfixToPostFix(parse_string):
     
     stack_of_operators = []
@@ -100,6 +121,14 @@ def InfixToPostFix(parse_string):
     
     return output_postfix
 
+##
+#@brief Evaluates a postfix expression
+#@param postfix_string String already in postfix form
+#@exception TypeError If postfix_string is not a string
+#@exception ValueError If not enough operands for operator
+#@exception IndexError If stack is empty at end
+#@return Result is a float of evaluation
+#
 def eval_postfix(postfix_string):
     if not isinstance(postfix_string, str):
         raise TypeError

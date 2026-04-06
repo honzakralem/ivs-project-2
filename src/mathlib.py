@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-############################################################################
-# @file mathlib.py
-# @brief Math library for IVS calculator 2026
-# @date 12.3.2026
-# @author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
-#
-# Implemenation of calculator functions
-############################################################################
+"""!
+@file mathlib.py
+@brief Math library for IVS calculator 2026, implemenation of calculator functions
+@date 12.3.2026
+@author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+"""
 
 import math
 

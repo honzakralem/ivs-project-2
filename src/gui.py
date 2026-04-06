@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-############################################################################
-# @file gui.py
-# @brief GUI for INTERCALCULATOR
-# @date 3.4.2026
-# @author Michal Holesa <xholesm00> Adrian Stanik <xstania00>
-#
-# Graphical user interface implementation using PyQt5.
-############################################################################
+"""!
+@file gui.py
+@brief GUI for INTERCALCULATOR, Graphical user interface implementation using PyQt5.
+@date 3.4.2026
+@author Michal Holesa <xholesm00> Adrian Stanik <xstania00>
+"""
+
 import os
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 

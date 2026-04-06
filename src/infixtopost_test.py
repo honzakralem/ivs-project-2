@@ -1,18 +1,20 @@
-############################################################################
-# @file infixtopost_test.py
-# @brief Tests for infix to postfix conversion for IVS calculator 2026
-# @date 29.3.2026
-# @author
-#
-# Implementation of tests for infix to postfix conversion
-############################################################################
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""! 
+@file infixtopost_test.py
+@brief Tests for infix to postfix conversion for IVS calculator 2026
+@date 29.3.2026
+@author Kristian Duzek <xduzekk00>
+"""
 
 from infixtopost import *
 import pytest
 
 
 ##
-# @brief Tests operator precedence evaluation
+#@brief Tests operator precedence evaluation
+#
 def test_eval_precedence ():
     assert eval_precedence("(") == 0
     assert eval_precedence("+") == 1
@@ -31,7 +33,8 @@ def test_eval_precedence ():
 
 
 ##
-# @brief Tests operand detection (numbers vs non-numbers)
+#@brief Tests operand detection (numbers vs non-numbers)
+#
 def test_is_operand ():
     assert is_operand("1") == True
     assert is_operand("0") == True
@@ -54,7 +57,8 @@ def test_is_operand ():
 
 
 ##
-# @brief Tests operator detection
+#@brief Tests operator detection
+#
 def test_is_operator ():
     assert is_operator("%") == True
     assert is_operator("+") == True
@@ -73,6 +77,7 @@ def test_is_operator ():
 
 ##
 # @brief Tests infix to postfix conversion including precedence and parentheses
+#
 def test_infixtopostfix():
     assert InfixToPostFix("5") == "5 "
     assert InfixToPostFix("3 + 4") == "3 4 + "
@@ -106,6 +111,7 @@ def test_infixtopostfix():
 
 ##
 # @brief Tests postfix expression evaluation including arithmetic operations and errors
+#
 def test_eval_postfix():
     assert eval_postfix("5") == 5.0
     assert eval_postfix("3 4 +") == 7.0

@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-############################################################################
-# @file mathlib_test.py
-# @brief Math library Tests for IVS calculator 2026
-# @date 12.3.2026
-# @author Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
-#
-# Implementation of tests for calculator library
-############################################################################
+"""!
+@file mathlib_test.py
+@brief Math library Tests for IVS calculator 2026, implementation of tests for calculator library
+@date 12.3.2026
+@author Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+"""
 
 from mathlib import *
 import pytest 
