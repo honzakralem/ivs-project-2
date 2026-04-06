@@ -79,6 +79,7 @@ def pow(a,b):
 # @exception  ValueError if b == 0
 # @exception  ValueError if a < 0 and b is even
 # @return     b-th root of a
+#
 def sqt(a,b):
     if b == 0:
         raise ValueError("Root degree cannot be zero")
@@ -95,6 +96,7 @@ def sqt(a,b):
 # @exception  ValueError if n is negative
 # @exception  TypeError if n is not an integer
 # @return     Factorial of n
+#
 def fac(n):
     if not isinstance(n, int):
         raise TypeError("n must be an integer")
@@ -108,6 +110,7 @@ def fac(n):
 # @param      a the input number (non-negative integer including zero)
 # @exception  ValueError if a is negative or zero
 # @return     natural log of a
+#
 def ln(a):
     if a <= 0:
         raise (ValueError)("a cannot be less than 0 OR == 0")

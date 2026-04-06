@@ -31,6 +31,7 @@ def eval_precedence(operator):
         raise ValueError(f"Unknown operator: {operator}")
 
 ##
+#@brief Function to check if a token is a number = operand
 #@return True if operand is a number
 #@param operand Token to check
 #@return True if operand is a number False otherwise
