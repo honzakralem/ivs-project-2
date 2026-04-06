@@ -43,7 +43,8 @@ class CalculatorGUI(QMainWindow):
     #
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("INTERCALCULATOR")
+        version = read_version()
+        self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
         self.initUI()
 
@@ -248,13 +249,11 @@ class CalculatorGUI(QMainWindow):
         elif text == 'DEL':
             stripped = curr.rstrip()
             if stripped.endswith(('√', '!', '^', '×', '÷')):
-                self.update_display(stripped[:-1].rstrip())
-            elif stripped.endswith('fac'):
-                self.update_display(stripped[:-3].rstrip())
+                self.update_display(stripped[:-1])
             elif stripped.endswith('ln'):
-                self.update_display(stripped[:-2].rstrip())
+                self.update_display(stripped[:-2])
             else:
-                self.update_display(stripped[:-1].rstrip())
+                self.update_display(stripped[:-1])
         
         elif text == '=':
             if not curr.strip():
