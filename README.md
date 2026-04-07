@@ -6,8 +6,6 @@
 
 ## PROSTŘEDÍ
 
-## PROSTŘEDÍ
-
 - Ubuntu 64-bit
 - Windows 64-bit
 - macOS 64-bit
