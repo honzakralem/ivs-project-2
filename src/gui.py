@@ -10,6 +10,13 @@
 
 import os
 import sys
+
+if sys.platform.startswith("linux"):
+    os.environ["QT_QPA_PLATFORM"] = "xcb"
+
+import faulthandler
+faulthandler.enable()
+
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel, 
                              QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
