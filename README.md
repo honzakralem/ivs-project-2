@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="./src/assets/icon-no-text.png" alt="alt text" width="200">
+  <img src="./src/assets/icon-no-text.png" alt="alt text" width="64">
 </p>
 
-<h1 style="text-align:center;">INTERCALCULATOR</h1>
+<h1 align="center">INTERCALCULATOR</h1>
 
 ## PROSTŘEDÍ
 
