@@ -59,6 +59,7 @@ jobs:
           pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
             --icon "$ICON_PATH" \
             --add-data "VERSION${SEP}." \
+            --add-data "src/assets${SEP}assets" \
             src/gui.py
 
       # ==========================================
@@ -139,17 +140,16 @@ jobs:
           cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
 
           fpm -s dir -t rpm -n "intercalculator" -v "$VER" \
-            -d "libX11" \
-            -d "libxcb" \
-            -d "libXcomposite" \
-            -d "libXcursor" \
-            -d "libXi" \
-            -d "libXrender" \
-            -d "libXrandr" \
             -d "qt5-qtbase" \
             -d "qt5-qtimageformats" \
+            -d "libxcb" \
+            -d "xcb-util-keysyms" \
+            -d "xcb-util-image" \
+            -d "xcb-util-renderutil" \
+            -d "xcb-util-wm" \
+            -d "libxkbcommon-x11" \
             -C package_root .
-
+            
           mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
       # ==========================================

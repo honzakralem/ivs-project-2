@@ -147,7 +147,7 @@ class CalculatorGUI(QMainWindow):
     #@param self instance reference
     #
     def setup_shortcuts(self):
-        self.shortcuts = []
+        self._shortcuts = []
 
         for key in '0123456789.+-*/%^()':
             shortcut = QShortcut(QKeySequence(key), self)
@@ -159,7 +159,7 @@ class CalculatorGUI(QMainWindow):
                 shortcut.activated.connect(lambda k='xʸ': self.on_button_click(k))
             else:
                 shortcut.activated.connect(lambda k=key: self.on_button_click(k))
-            self.shortcuts.append(shortcut)
+            self._shortcuts.append(shortcut)
 
         special_keys = {
             Qt.Key_Comma: '.',
@@ -176,7 +176,7 @@ class CalculatorGUI(QMainWindow):
         for key, action in special_keys.items():
             shortcut = QShortcut(QKeySequence(key), self)
             shortcut.activated.connect(lambda a=action: self.on_button_click(a))
-            self.shortcuts.append(shortcut)
+            self._shortcuts.append(shortcut)
 
     ##
     #@brief Updates the display text and ensures the cursor remains at the end.
