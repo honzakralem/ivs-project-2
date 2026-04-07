@@ -11,9 +11,6 @@
 import os
 import sys
 
-import faulthandler
-faulthandler.enable()
-
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel, 
                              QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
