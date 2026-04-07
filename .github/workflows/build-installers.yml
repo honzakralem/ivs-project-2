@@ -91,9 +91,17 @@ jobs:
           cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
 
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
-            -d "libxcb-icccm4" \
-            -d "libxcb-keysyms1" \
+            -d "libqt5gui5" \
+            -d "libqt5widgets5" \
+            -d "libqt5svg5" \
             -d "libxcb-xinerama0" \
+            -d "libxcb-icccm4" \
+            -d "libxcb-image0" \
+            -d "libxcb-keysyms1" \
+            -d "libxcb-render-util0" \
+            -d "libxcb-shape0" \
+            -d "libxcb-randr0" \
+            -d "libxcb-xfixes0" \
             -d "libx11-xcb1" \
             -d "libxkbcommon-x11-0" \
             -C package_root .
@@ -121,7 +129,7 @@ jobs:
           [Desktop Entry]
           Type=Application
           Name=INTERCALCULATOR $VER
-          Exec=/usr/local/bin/intercalculator
+          Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
           Icon=intercalculator
@@ -130,7 +138,17 @@ jobs:
           mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
           cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
 
-          fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
+          fpm -s dir -t rpm -n "intercalculator" -v "$VER" \
+            -d "libX11" \
+            -d "libxcb" \
+            -d "libXcomposite" \
+            -d "libXcursor" \
+            -d "libXi" \
+            -d "libXrender" \
+            -d "libXrandr" \
+            -d "qt5-qtbase" \
+            -d "qt5-qtimageformats" \
+            -C package_root .
 
           mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
