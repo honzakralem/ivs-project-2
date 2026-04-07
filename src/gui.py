@@ -51,7 +51,7 @@ class CalculatorGUI(QMainWindow):
     #
     def __init__(self):
         super().__init__()
-        self.setWindowIcon(QIcon(resource_path("assets", "icon-512.png")))
+        self.setWindowIcon(QIcon(resource_path("assets", "icon-no-text.png")))
         version = read_version()
         self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
