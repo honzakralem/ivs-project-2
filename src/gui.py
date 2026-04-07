@@ -11,9 +11,6 @@
 import os
 import sys
 
-if sys.platform.startswith("linux"):
-    os.environ["QT_QPA_PLATFORM"] = "xcb"
-
 import faulthandler
 faulthandler.enable()
 

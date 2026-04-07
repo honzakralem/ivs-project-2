@@ -16,9 +16,6 @@ jobs:
           - os: ubuntu-latest
             target: debian
             artifact_name: INTERCALCULATOR-Ubuntu-Debian.deb
-          - os: ubuntu-latest
-            target: fedora
-            artifact_name: INTERCALCULATOR-Fedora.rpm
           - os: windows-latest
             target: windows
             artifact_name: INTERCALCULATOR-Windows-Setup.exe
@@ -60,7 +57,6 @@ jobs:
             --icon "$ICON_PATH" \
             --add-data "VERSION${SEP}." \
             --add-data "src/assets${SEP}assets" \
-            --exclude-module _tkinter \
             src/gui.py
 
       # ==========================================
@@ -109,50 +105,6 @@ jobs:
             -C package_root .
 
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
-
-      # ==========================================
-      # FEDORA: Create a .rpm package
-      # ==========================================
-      - name: Create Fedora .rpm installer
-        if: matrix.target == 'fedora'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rubygems rpm
-          sudo gem install fpm
-
-          VER=$(cat VERSION | tr -d '\n\r ')
-
-          mkdir -p package_root/usr/local/bin
-          cp "dist/INTERCALCULATOR" package_root/usr/local/bin/intercalculator
-          chmod +x package_root/usr/local/bin/intercalculator
-
-          mkdir -p package_root/usr/share/applications
-          cat <<EOF > package_root/usr/share/applications/intercalculator.desktop
-          [Desktop Entry]
-          Type=Application
-          Name=INTERCALCULATOR $VER
-          Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
-          Terminal=false
-          Categories=Utility;Calculator;
-          Icon=intercalculator
-          EOF
-
-          mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
-          cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
-
-          fpm -s dir -t rpm -n "intercalculator" -v "$VER" \
-            -d "qt5-qtbase-gui" \
-            -d "qt5-qtimageformats" \
-            -d "libxkbcommon" \
-            -d "libxkbcommon-x11" \
-            -d "libxcb" \
-            -d "xcb-util-keysyms" \
-            -d "xcb-util-image" \
-            -d "xcb-util-renderutil" \
-            -d "xcb-util-wm" \
-            -C package_root .
-            
-          mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
       # ==========================================
       # WINDOWS: Create a Setup Installer
