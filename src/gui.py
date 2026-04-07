@@ -10,11 +10,12 @@
 
 import os
 import sys
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
-                             QVBoxLayout, QGridLayout, QTextEdit, 
+
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel, 
+                             QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
+from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap
 
 from infixtopost import InfixToPostFix, eval_postfix
 
@@ -29,7 +30,14 @@ def read_version():
             return f.read().strip()
     except OSError:
         return "unknown"
-    
+
+def resource_path(*parts):
+    if getattr(sys, "frozen", False):
+        base = sys._MEIPASS
+    else:
+        base = os.path.dirname(__file__)
+    return os.path.join(base, *parts)
+
 ##
 #@brief Main window class for the INTERCALCULATOR application.
 # Inherits from QMainWindow to provide a standard application window frame.
@@ -43,6 +51,7 @@ class CalculatorGUI(QMainWindow):
     #
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon(resource_path("assets", "icon-no-text.png")))
         version = read_version()
         self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
@@ -61,13 +70,13 @@ class CalculatorGUI(QMainWindow):
         help_action.triggered.connect(self.show_help)
         menubar.addAction(help_action)
 
-        info_action = QAction('About', self)
-        info_action.triggered.connect(self.show_info)
-        menubar.addAction(info_action)
-
         controls_action = QAction('Controls', self)
         controls_action.triggered.connect(self.show_controls)
         menubar.addAction(controls_action)
+
+        info_action = QAction('About', self)
+        info_action.triggered.connect(self.show_info)
+        menubar.addAction(info_action)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -139,6 +148,8 @@ class CalculatorGUI(QMainWindow):
     #@param self instance reference
     #
     def setup_shortcuts(self):
+        self._shortcuts = []
+
         for key in '0123456789.+-*/%^()':
             shortcut = QShortcut(QKeySequence(key), self)
             if key == '*':
@@ -149,6 +160,7 @@ class CalculatorGUI(QMainWindow):
                 shortcut.activated.connect(lambda k='xʸ': self.on_button_click(k))
             else:
                 shortcut.activated.connect(lambda k=key: self.on_button_click(k))
+            self._shortcuts.append(shortcut)
 
         special_keys = {
             Qt.Key_Comma: '.',
@@ -165,6 +177,7 @@ class CalculatorGUI(QMainWindow):
         for key, action in special_keys.items():
             shortcut = QShortcut(QKeySequence(key), self)
             shortcut.activated.connect(lambda a=action: self.on_button_click(a))
+            self._shortcuts.append(shortcut)
 
     ##
     #@brief Updates the display text and ensures the cursor remains at the end.
@@ -188,11 +201,11 @@ class CalculatorGUI(QMainWindow):
     def show_help(self):
         text = (
             "Simple guide:\n\n"
-            "- Enter the mathematical expression conventionally (infix).\n"
-            "- Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
-            "- Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
-            "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
-            "- After pressing '=', the expression is evaluated."
+            "• Enter the mathematical expression conventionally (infix).\n"
+            "• Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
+            "• Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
+            "• 'C' clears the entire display, 'DEL' deletes the last character.\n"
+            "• After pressing '=', the expression is evaluated."
         )
         QMessageBox.information(self, "Guide", text)
 
@@ -203,17 +216,39 @@ class CalculatorGUI(QMainWindow):
     #
     def show_info(self):
         version = read_version()
-        text = (
-            "INTERCALCULATOR\n\n"
-            f"Version: {version}\n"
-            "\n"
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("About")
+        dialog.setWindowFlags(
+            dialog.windowFlags() & ~Qt.WindowContextHelpButtonHint
+        )
+
+        layout = QVBoxLayout(dialog)
+
+        title = QLabel("INTERCALCULATOR")
+        title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("font-weight: bold; font-size: 18px;")
+        layout.addWidget(title)
+
+        icon_label = QLabel()
+        pix = QPixmap(resource_path("assets", "icon-512.png"))
+        icon_label.setPixmap(pix.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        icon_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(icon_label)
+
+        info = QLabel(
+            f"Version: {version}\n\n"
             "Authors:\n"
             "• Ha Pham <xphamha00>\n"
-            "• Kristian Duzek <xduzekk00>\n"
-            "• Michal Holesa <xholesm00>\n"
-            "• Adrian Stanik <xstania00>\n"
-            )
-        QMessageBox.information(self, "About", text)
+            "• Kristián Dúžek <xduzekk00>\n"
+            "• Michal Holeša <xholesm00>\n"
+            "• Adrián Staník <xstania00>\n"
+        )
+        info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(info)
+
+        dialog.exec_()
+        
 
     ##
     #@brief Displays a pop-up dialog box listing the keyboard shortcuts.

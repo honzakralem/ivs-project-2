@@ -16,9 +16,6 @@ jobs:
           - os: ubuntu-latest
             target: debian
             artifact_name: INTERCALCULATOR-Ubuntu-Debian.deb
-          - os: ubuntu-latest
-            target: fedora
-            artifact_name: INTERCALCULATOR-Fedora.rpm
           - os: windows-latest
             target: windows
             artifact_name: INTERCALCULATOR-Windows-Setup.exe
@@ -48,11 +45,18 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
             SEP=";"
+            ICON_PATH="src/assets/icon.ico"
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            SEP=":"
+            ICON_PATH="src/assets/icon-512.icns"
           else
             SEP=":"
+            ICON_PATH="src/assets/icon-512.png"
           fi
           pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
+            --icon "$ICON_PATH" \
             --add-data "VERSION${SEP}." \
+            --add-data "src/assets${SEP}assets" \
             src/gui.py
 
       # ==========================================
@@ -78,47 +82,29 @@ jobs:
           Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
+          Icon=intercalculator
           EOF
 
+          mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
+          cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
+
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
-            -d "libxcb-icccm4" \
-            -d "libxcb-keysyms1" \
+            -d "libqt5gui5" \
+            -d "libqt5widgets5" \
+            -d "libqt5svg5" \
             -d "libxcb-xinerama0" \
+            -d "libxcb-icccm4" \
+            -d "libxcb-image0" \
+            -d "libxcb-keysyms1" \
+            -d "libxcb-render-util0" \
+            -d "libxcb-shape0" \
+            -d "libxcb-randr0" \
+            -d "libxcb-xfixes0" \
             -d "libx11-xcb1" \
             -d "libxkbcommon-x11-0" \
             -C package_root .
 
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
-
-      # ==========================================
-      # FEDORA: Create a .rpm package
-      # ==========================================
-      - name: Create Fedora .rpm installer
-        if: matrix.target == 'fedora'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rubygems rpm
-          sudo gem install fpm
-
-          VER=$(cat VERSION | tr -d '\n\r ')
-
-          mkdir -p package_root/usr/local/bin
-          cp "dist/INTERCALCULATOR" package_root/usr/local/bin/intercalculator
-          chmod +x package_root/usr/local/bin/intercalculator
-
-          mkdir -p package_root/usr/share/applications
-          cat <<EOF > package_root/usr/share/applications/intercalculator.desktop
-          [Desktop Entry]
-          Type=Application
-          Name=INTERCALCULATOR $VER
-          Exec=/usr/local/bin/intercalculator
-          Terminal=false
-          Categories=Utility;Calculator;
-          EOF
-
-          fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
-
-          mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
       # ==========================================
       # WINDOWS: Create a Setup Installer
