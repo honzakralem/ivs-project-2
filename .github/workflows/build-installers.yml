@@ -48,13 +48,13 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
             SEP=";"
-            ICON_PATH="assets/icon.ico"
+            ICON_PATH="/src/assets/icon.ico"
           elif [ "$RUNNER_OS" = "macOS" ]; then
             SEP=":"
-            ICON_PATH="assets/icon-512.icns"
+            ICON_PATH="/src/assets/icon-512.icns"
           else
             SEP=":"
-            ICON_PATH="assets/icon-512.png"
+            ICON_PATH="/src/assets/icon-512.png"
           fi
           pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
             --icon "$ICON_PATH" \
