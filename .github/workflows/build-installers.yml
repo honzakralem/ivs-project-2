@@ -87,6 +87,9 @@ jobs:
           Icon=intercalculator
           EOF
 
+          mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
+          cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
+
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
             -d "libxcb-icccm4" \
             -d "libxcb-keysyms1" \
@@ -94,9 +97,6 @@ jobs:
             -d "libx11-xcb1" \
             -d "libxkbcommon-x11-0" \
             -C package_root .
-
-          mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
-          cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
 
           mv intercalculator_${VER}_amd64.deb INTERCALCULATOR-Ubuntu-Debian.deb
 
@@ -127,10 +127,10 @@ jobs:
           Icon=intercalculator
           EOF
 
-          fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
-
           mkdir -p package_root/usr/share/icons/hicolor/512x512/apps
           cp "src/assets/icon-512.png" package_root/usr/share/icons/hicolor/512x512/apps/intercalculator.png
+
+          fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
 
           mv intercalculator-${VER}-1.x86_64.rpm INTERCALCULATOR-Fedora.rpm
 
