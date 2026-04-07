@@ -10,11 +10,11 @@
 
 import os
 import sys
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
-                             QVBoxLayout, QGridLayout, QTextEdit, 
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel, 
+                             QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
+from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap
 
 from infixtopost import InfixToPostFix, eval_postfix
 
@@ -29,7 +29,14 @@ def read_version():
             return f.read().strip()
     except OSError:
         return "unknown"
-    
+
+def resource_path(*parts):
+    if getattr(sys, "frozen", False):
+        base = sys._MEIPASS
+    else:
+        base = os.path.dirname(__file__)
+    return os.path.join(base, *parts)
+
 ##
 #@brief Main window class for the INTERCALCULATOR application.
 # Inherits from QMainWindow to provide a standard application window frame.
@@ -43,6 +50,7 @@ class CalculatorGUI(QMainWindow):
     #
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon(resource_path("assets", "icon-512.png")))
         version = read_version()
         self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
@@ -203,17 +211,39 @@ class CalculatorGUI(QMainWindow):
     #
     def show_info(self):
         version = read_version()
-        text = (
-            "INTERCALCULATOR\n\n"
-            f"Version: {version}\n"
-            "\n"
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("About")
+        dialog.setWindowFlags(
+            dialog.windowFlags() & ~Qt.WindowContextHelpButtonHint
+        )
+
+        layout = QVBoxLayout(dialog)
+
+        title = QLabel("INTERCALCULATOR")
+        title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("font-weight: bold; font-size: 18px;")
+        layout.addWidget(title)
+
+        icon_label = QLabel()
+        pix = QPixmap(resource_path("assets", "icon-512.png"))
+        icon_label.setPixmap(pix.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        icon_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(icon_label)
+
+        info = QLabel(
+            f"Version: {version}\n\n"
             "Authors:\n"
             "• Ha Pham <xphamha00>\n"
-            "• Kristian Duzek <xduzekk00>\n"
-            "• Michal Holesa <xholesm00>\n"
-            "• Adrian Stanik <xstania00>\n"
-            )
-        QMessageBox.information(self, "About", text)
+            "• Kristián Dúžek <xduzekk00>\n"
+            "• Michal Holeša <xholesm00>\n"
+            "• Adrián Staník <xstania00>\n"
+        )
+        info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(info)
+
+        dialog.exec_()
+        
 
     ##
     #@brief Displays a pop-up dialog box listing the keyboard shortcuts.
