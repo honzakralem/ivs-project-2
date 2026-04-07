@@ -1,4 +1,10 @@
-# INTERCALCULATOR
+<p align="center">
+  <img src="./src/assets/icon-no-text.png" alt="alt text" width="200">
+</p>
+
+<h1 style="text-align:center;">INTERCALCULATOR</h1>
+
+## PROSTŘEDÍ
 
 ## PROSTŘEDÍ
 
