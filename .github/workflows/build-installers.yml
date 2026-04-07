@@ -48,10 +48,16 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
             SEP=";"
+            ICON_PATH="assets/icon.ico"
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            SEP=":"
+            ICON_PATH="assets/icon-512.icns"
           else
             SEP=":"
+            ICON_PATH="assets/icon-512.png"
           fi
           pyinstaller --noconfirm --onefile --windowed --name "INTERCALCULATOR" \
+            --icon "$ICON_PATH" \
             --add-data "VERSION${SEP}." \
             src/gui.py
 
@@ -78,6 +84,7 @@ jobs:
           Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
+          Icon=intercalculator
           EOF
 
           fpm -s dir -t deb -n "intercalculator" -v "$VER" \
@@ -114,6 +121,7 @@ jobs:
           Exec=/usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
+          Icon=intercalculator
           EOF
 
           fpm -s dir -t rpm -n "intercalculator" -v "$VER" -C package_root .
