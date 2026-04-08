@@ -180,17 +180,23 @@ class CalculatorGUI(QMainWindow):
             self._shortcuts.append(shortcut)
 
     ##
-    #@brief Updates the display text and ensures the cursor remains at the end.
+    #@brief Updates the display text and manages cursor/alignment.
     #@return None
     #@param self instance reference
     #@param text The string to output to the calculator display
+    #@param align_left Boolean to determine if text should align to the left
     #
-    def update_display(self, text):
+    def update_display(self, text, align_left=False):
         self.display.setText(text)
-        self.display.setAlignment(Qt.AlignRight)
-    
+        
         cursor = self.display.textCursor()
-        cursor.movePosition(QTextCursor.End)
+        if align_left:
+            self.display.setAlignment(Qt.AlignLeft)
+            cursor.movePosition(QTextCursor.Start)
+        else:
+            self.display.setAlignment(Qt.AlignRight)
+            cursor.movePosition(QTextCursor.End)
+            
         self.display.setTextCursor(cursor)
 
     ##
@@ -310,11 +316,10 @@ class CalculatorGUI(QMainWindow):
                 else:
                     res = round(res, 10)
                     
-                self.update_display(str(res))
+                self.update_display(str(res), align_left=True)
             
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
-                self.display.clear()
         
         else:
             if text == 'xʸ':
