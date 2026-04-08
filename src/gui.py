@@ -78,9 +78,12 @@ class CalculatorGUI(QMainWindow):
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
-        self.theme_action = QAction('Dark Mode', self, checkable=True)
-        self.theme_action.triggered.connect(self.toggle_theme)
-        menubar.addAction(self.theme_action)
+        self.theme_btn = QPushButton('Dark Mode', self)
+        self.theme_btn.setCheckable(True)
+        self.theme_btn.setFlat(True)
+        self.theme_btn.setCursor(Qt.PointingHandCursor)
+        self.theme_btn.clicked.connect(self.toggle_theme)
+        menubar.setCornerWidget(self.theme_btn, Qt.TopRightCorner)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -301,10 +304,10 @@ class CalculatorGUI(QMainWindow):
     def toggle_theme(self, checked):
         if checked:
             self.setStyleSheet(self.dark_theme)
-            self.theme_action.setText('Light Mode')
+            self.theme_btn.setText('Light Mode')
         else:
             self.setStyleSheet(self.light_theme)
-            self.theme_action.setText('Dark Mode')    
+            self.theme_btn.setText('Dark Mode') 
 
     ##
     #@brief Handles button click events, updating the display or triggering evaluation.
