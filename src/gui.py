@@ -93,7 +93,7 @@ class CalculatorGUI(QMainWindow):
         self.central_widget.setLayout(self.layout)
 
         self.display = QTextEdit()
-        self.display.setFixedHeight(100)
+        self.display.setFixedHeight(115)
         self.display.setReadOnly(True)
         self.display.setFont(QFont("Arial", 28))
         self.display.setLineWrapMode(QTextEdit.NoWrap)
