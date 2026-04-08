@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel,
                              QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap
+from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap, QFontMetrics
 
 from infixtopost import InfixToPostFix, eval_postfix
 
@@ -55,6 +55,7 @@ class CalculatorGUI(QMainWindow):
         version = read_version()
         self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
+        self.new_calculation = False 
         self.initUI()
 
     ##
@@ -324,6 +325,13 @@ class CalculatorGUI(QMainWindow):
     def on_button_click(self, text):
         curr = self.display.toPlainText()
 
+        if getattr(self, 'new_calculation', False):
+            self.new_calculation = False
+            
+            if text not in ['+', '-', '×', '÷', '%', 'xʸ', '^', '=', 'C', 'DEL']:
+                self.display.clear()
+                curr = ""
+
         if text == 'C':
             self.display.clear()
         
@@ -356,7 +364,16 @@ class CalculatorGUI(QMainWindow):
                 else:
                     res = round(res, 10)
                     
-                self.update_display(str(res), align_left=True)
+                res_str = str(res)
+                
+                font_metrics = QFontMetrics(self.display.font())
+                text_width = font_metrics.boundingRect(res_str).width()
+                available_width = self.display.viewport().width() - 25   
+                is_too_long = text_width > available_width
+                    
+                self.update_display(res_str, align_left=is_too_long)
+
+                self.new_calculation = True 
             
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
