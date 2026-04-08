@@ -78,6 +78,10 @@ class CalculatorGUI(QMainWindow):
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
+        self.theme_action = QAction('Dark Mode', self, checkable=True)
+        self.theme_action.triggered.connect(self.toggle_theme)
+        menubar.addAction(self.theme_action)
+
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         
@@ -123,10 +127,10 @@ class CalculatorGUI(QMainWindow):
 
             self.grid.addWidget(btn, pos[0], pos[1])
 
-        self.setStyleSheet("""
+        self.light_theme = """
             QMainWindow, QWidget { background-color: #f2f2f2; color: #111; }
                            
-            QPushButton { border-radius: 8px; border: 2px solid #ccc; }
+            QPushButton { border-radius: 8px; border: 2px solid #ccc; color: #111; }
             QPushButton[btnClass="number"] { background-color: #ffffff; }
             QPushButton[btnClass="number"]:pressed { background-color: #e0e0e0; }
                            
@@ -136,9 +140,28 @@ class CalculatorGUI(QMainWindow):
             QPushButton[btnClass="control"] { background-color: #fadbd8; }
             QPushButton[btnClass="control"]:pressed { background-color: #f5b7b1; }
                            
-            QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
+            QTextEdit { background-color: #fff; color: #111; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
-        """)
+        """
+
+        self.dark_theme = """
+            QMainWindow, QWidget { background-color: #2b2b2b; color: #eeeeee; }
+                           
+            QPushButton { border-radius: 8px; border: 2px solid #555; color: #eeeeee; }
+            QPushButton[btnClass="number"] { background-color: #3c3f41; }
+            QPushButton[btnClass="number"]:pressed { background-color: #555555; }
+                           
+            QPushButton[btnClass="operator"] { background-color: #1a5276; }
+            QPushButton[btnClass="operator"]:pressed { background-color: #2980b9; }
+                           
+            QPushButton[btnClass="control"] { background-color: #7b241c; }
+            QPushButton[btnClass="control"]:pressed { background-color: #922b21; }
+                           
+            QTextEdit { background-color: #1e1e1e; color: #eeeeee; border: 3px solid #555; border-radius: 8px; padding: 10px; }
+            QScrollBar:horizontal { height: 12px; background-color: #333333; }
+        """
+
+        self.setStyleSheet(self.light_theme)
 
         self.setup_shortcuts()
 
@@ -268,6 +291,20 @@ class CalculatorGUI(QMainWindow):
             "• Escape or Delete : Clear entire display (C)\n"
         )
         QMessageBox.information(self, "Controls", text)
+
+    ##
+    #@brief Toggles the application theme between Light and Dark mode.
+    #@return None
+    #@param self instance reference
+    #@param checked Boolean state of the menu toggle
+    #
+    def toggle_theme(self, checked):
+        if checked:
+            self.setStyleSheet(self.dark_theme)
+            self.theme_action.setText('Light Mode')
+        else:
+            self.setStyleSheet(self.light_theme)
+            self.theme_action.setText('Dark Mode')    
 
     ##
     #@brief Handles button click events, updating the display or triggering evaluation.
