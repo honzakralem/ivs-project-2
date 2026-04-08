@@ -337,10 +337,10 @@ class CalculatorGUI(QMainWindow):
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith(('√', '!', '^', '×', '÷')):
-                self.update_display(stripped[:-1])
-            elif stripped.endswith('ln'):
+            if stripped.endswith(('√', '!', '^', '×', '÷', '%', '+', '-', '(', ')')):
                 self.update_display(stripped[:-2])
+            elif stripped.endswith('ln'):
+                self.update_display(stripped[:-3])
             else:
                 self.update_display(stripped[:-1])
         
@@ -416,11 +416,17 @@ class CalculatorGUI(QMainWindow):
                 stripped = curr.rstrip()
 
                 if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
-                    stripped = stripped[:-1].rstrip()
-
-                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                    if stripped.endswith('ln'):
+                        stripped = stripped[:-2].rstrip()
+                    else:
                         stripped = stripped[:-1].rstrip()
 
+                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                        if stripped.endswith('ln'):
+                            stripped = stripped[:-2].rstrip()
+                        else:
+                            stripped = stripped[:-1].rstrip()
+                            
                     self.update_display(stripped)
                     curr = self.display.toPlainText()
 
