@@ -236,7 +236,7 @@ class CalculatorGUI(QMainWindow):
             "Simple guide:\n\n"
             "• Enter the mathematical expression conventionally (infix).\n"
             "• Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
-            "• Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
+            "• Root operation (√): Behaves like a binary operator, enter in the format 'degree √ base'.\n"
             "• 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "• After pressing '=', the expression is evaluated."
         )
@@ -387,7 +387,7 @@ class CalculatorGUI(QMainWindow):
             ops = ['+', '-', '×', '÷', '%', '^', '√', 'ln', '!', '(', ')']
             binary_ops = ['+', '×', '÷', '%', '^']
 
-            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!', '√']:
+            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!']:
                 self.update_display("0")
                 curr = "0"
 

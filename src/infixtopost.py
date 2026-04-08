@@ -205,7 +205,7 @@ def eval_postfix(postfix_string):
                         raise ValueError("Not enough operands for sqt")
                     operand1 = float(operands_stack.pop())
                     operand2 = float(operands_stack.pop())
-                    result = sqt(operand2,operand1) 
+                    result = sqt(operand1,operand2) 
                     operands_stack.append(result)
     
     final_result = float(operands_stack.pop())
