@@ -314,7 +314,6 @@ class CalculatorGUI(QMainWindow):
             
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
-                self.display.clear()
         
         else:
             if text == 'xʸ':
