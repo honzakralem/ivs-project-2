@@ -190,8 +190,11 @@ def eval_postfix(postfix_string):
                     operands_stack.append(result)
                 case "fac":
                     if len(operands_stack) < 1:
-                        raise ValueError("Not enough operands for fac")
-                    operand1 = int(float(operands_stack.pop()))
+                        raise ValueError("Not enough operands for fac")                    
+                    operand_float = float(operands_stack.pop())                    
+                    if not operand_float.is_integer():
+                        raise TypeError("Factorial is only defined for integers")                        
+                    operand1 = int(operand_float)
                     result = fac(operand1)
                     operands_stack.append(result)
                 case "ln":

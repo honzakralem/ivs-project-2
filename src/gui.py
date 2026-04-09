@@ -357,6 +357,12 @@ class CalculatorGUI(QMainWindow):
                         .replace('×', '*')
                         .replace('÷', '/')
                 )
+
+                eval_string = eval_string.strip()
+                if eval_string.startswith('- '):
+                    eval_string = "0 " + eval_string
+                eval_string = eval_string.replace('( - ', '( 0 - ')
+                
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
@@ -412,6 +418,12 @@ class CalculatorGUI(QMainWindow):
                 else:
                     self.update_display(curr + "2 √ ")
                 return
+            
+            if text == '(':
+                stripped = curr.rstrip()
+                if stripped and stripped[-1].isdigit():
+                    self.update_display(stripped + " × ( ")
+                    return
 
             if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
                 stripped = curr.rstrip()
