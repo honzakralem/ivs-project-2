@@ -79,10 +79,12 @@ class CalculatorGUI(QMainWindow):
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
-        self.theme_btn = QPushButton('Dark Mode', self)
+        self.theme_btn = QPushButton('☀  Light Mode', self)
         self.theme_btn.setCheckable(True)
+        self.theme_btn.setChecked(True)
         self.theme_btn.setFlat(True)
         self.theme_btn.setCursor(Qt.PointingHandCursor)
+        self.theme_btn.setObjectName("themeToggle")
         self.theme_btn.clicked.connect(self.toggle_theme)
         menubar.setCornerWidget(self.theme_btn, Qt.TopRightCorner)
 
@@ -132,6 +134,20 @@ class CalculatorGUI(QMainWindow):
             self.grid.addWidget(btn, pos[0], pos[1])
 
         self.light_theme = """
+            QPushButton#themeToggle {
+                background-color: #ffffff;
+                color: #222222;
+                border: 2px solid #cccccc;
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-weight: bold;
+            }
+            QPushButton#themeToggle:hover {
+                background-color: #f0f0f0;
+            }
+            QPushButton#themeToggle:pressed {
+                background-color: #e0e0e0;
+            }
             QMainWindow, QWidget { background-color: #f2f2f2; color: #111; }
                            
             QPushButton { border-radius: 8px; border: 2px solid #ccc; color: #111; }
@@ -149,6 +165,32 @@ class CalculatorGUI(QMainWindow):
         """
 
         self.dark_theme = """
+            QPushButton#themeToggle {
+                background-color: #3a3a3a;
+                color: #f5f5f5;
+                border: 2px solid #666666;
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-weight: bold;
+            }
+            QPushButton#themeToggle:hover {
+                background-color: #4a4a4a;
+            }
+            QPushButton#themeToggle:pressed {
+                background-color: #2f2f2f;
+            }
+            QMenuBar {
+                background-color: #2b2b2b;
+                color: #eeeeee;
+            }
+            QMenuBar::item {
+                background: transparent;
+                padding: 4px 10px;
+            }
+            QMenuBar::item:selected {
+                background: #3a3a3a;
+            }
+
             QMainWindow, QWidget { background-color: #2b2b2b; color: #eeeeee; }
                            
             QPushButton { border-radius: 8px; border: 2px solid #555; color: #eeeeee; }
@@ -165,7 +207,7 @@ class CalculatorGUI(QMainWindow):
             QScrollBar:horizontal { height: 12px; background-color: #333333; }
         """
 
-        self.setStyleSheet(self.light_theme)
+        self.setStyleSheet(self.dark_theme)
 
         self.setup_shortcuts()
 
@@ -312,10 +354,10 @@ class CalculatorGUI(QMainWindow):
     def toggle_theme(self, checked):
         if checked:
             self.setStyleSheet(self.dark_theme)
-            self.theme_btn.setText('Light Mode')
+            self.theme_btn.setText('☀  Light Mode')
         else:
             self.setStyleSheet(self.light_theme)
-            self.theme_btn.setText('Dark Mode') 
+            self.theme_btn.setText('🌙  Dark Mode')
 
     ##
     #@brief Handles button click events, updating the display or triggering evaluation.
@@ -362,7 +404,7 @@ class CalculatorGUI(QMainWindow):
                 if eval_string.startswith('- '):
                     eval_string = "0 " + eval_string
                 eval_string = eval_string.replace('( - ', '( 0 - ')
-                
+
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
