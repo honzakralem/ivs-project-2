@@ -466,6 +466,9 @@ class CalculatorGUI(QMainWindow):
                 if stripped and stripped[-1].isdigit():
                     self.update_display(stripped + " × ( ")
                     return
+                if stripped and stripped[-1].endswith(')'):
+                    self.update_display(stripped + " × ( ")
+                    return
 
             if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
                 stripped = curr.rstrip()
