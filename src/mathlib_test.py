@@ -123,3 +123,25 @@ def test_ln():
     assert ln(0.11111111) == -2.1972245873362195
     assert ln(2) == 0.6931471805599453
     assert ln (3.5) == 1.252762968495368
+
+##
+#@brief Tests modulo function
+#
+def test_mod():
+    assert mod(5, 2) == 1
+    assert mod(10, 5) == 0
+    assert mod(14, 3) == 2
+    
+    assert mod(0, 5) == 0
+    
+    with pytest.raises(ZeroDivisionError):
+        mod(5, 0)
+    with pytest.raises(ZeroDivisionError):
+        mod(0, 0)
+        
+    assert mod(-5, 2) == 1
+    assert mod(5, -2) == -1
+    assert mod(-5, -2) == -1
+    
+    assert mod(5.5, 2) == 1.5
+    assert mod(5, 1.5) == 0.5

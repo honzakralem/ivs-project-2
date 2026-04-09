@@ -81,8 +81,8 @@ def pow(a,b):
 # @return     b-th root of a
 #
 def sqt(a,b):
-    if b <= 0:
-        raise ValueError("Root degree cannot be negative or zero")
+    if b == 0:
+        raise ValueError("Root degree cannot be zero")
     if a < 0 and b % 2 == 0:
         raise ValueError("Even root of negative number is not real")
 

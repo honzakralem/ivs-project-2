@@ -236,7 +236,8 @@ class CalculatorGUI(QMainWindow):
             "Simple guide:\n\n"
             "• Enter the mathematical expression conventionally (infix).\n"
             "• Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
-            "• Root operation (√): Behaves like a binary operator, enter in the format 'degree √ base'.\n"
+            "• Root operation (√): Behaves like a binary operator, enter in the format 'degree √ base'. If degree is negative the formula used is base^(1/degree).\n"
+            "• If you want to enter a negative number or a longer expression into an operation (like √, ln, n!), use parentheses '()'. (e.g., '3 √ (-8)' or 'ln (5+2)').\n"
             "• 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "• After pressing '=', the expression is evaluated."
         )
@@ -294,7 +295,7 @@ class CalculatorGUI(QMainWindow):
             "• 0-9, +, -, ×, ÷, %, xʸ, (, ) : Standard input\n"
             "• . or , (Comma) : Decimal point\n"
             "• ! (Exclamation) : Factorial (n!)\n"
-            "• S : Root (x √ y)\n"
+            "• S : Root (degree √ base)\n"
             "• L : Natural logarithm (ln)\n"
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
