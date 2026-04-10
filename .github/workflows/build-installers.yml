@@ -125,7 +125,9 @@ jobs:
           echo 'Compression=lzma' >> installer.iss
           echo 'SolidCompression=yes' >> installer.iss
 
-          # Add Tasks section for the desktop shortcut option
+          echo '[Run]' >> installer.iss
+          echo 'Filename: "{app}\INTERCALCULATOR.exe"; Description: "{cm:LaunchProgram,INTERCALCULATOR}"; Flags: nowait postinstall skipifsilent' >> installer.iss
+          
           echo '[Tasks]' >> installer.iss
           echo 'Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked' >> installer.iss
 
@@ -133,9 +135,7 @@ jobs:
           echo 'Source: "dist\INTERCALCULATOR.exe"; DestDir: "{app}"; Flags: ignoreversion' >> installer.iss
 
           echo '[Icons]' >> installer.iss
-          # Start menu shortcut
           echo 'Name: "{autoprograms}\INTERCALCULATOR"; Filename: "{app}\INTERCALCULATOR.exe"' >> installer.iss
-          # Desktop shortcut (linked to the task)
           echo 'Name: "{autodesktop}\INTERCALCULATOR"; Filename: "{app}\INTERCALCULATOR.exe"; Tasks: desktopicon' >> installer.iss
 
           iscc installer.iss
@@ -176,17 +176,18 @@ jobs:
     name: Create GitHub Release
     needs: build-installers
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Check if VERSION file changed
         id: check_version
         run: |
-          if git diff --name-only HEAD~1 HEAD | grep -q "^VERSION$"; then
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^VERSION$"; then
             echo "changed=true" >> $GITHUB_OUTPUT
             VER=$(cat VERSION | tr -d '\n\r ')
             echo "version=$VER" >> $GITHUB_OUTPUT

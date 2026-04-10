@@ -105,7 +105,7 @@ def InfixToPostFix(parse_string):
                     stack_of_operators.append(i)
 
                 elif operator_precedence <= last_operator_precedence:
-                    while operator_precedence <= last_operator_precedence and len(stack_of_operators) > 0:
+                    while len(stack_of_operators) > 0 and (operator_precedence < last_operator_precedence or (operator_precedence == last_operator_precedence and i != "^")):
                         output_postfix+=stack_of_operators[-1] + " "
                         stack_of_operators.pop()
                         if len(stack_of_operators) > 0:
@@ -190,8 +190,11 @@ def eval_postfix(postfix_string):
                     operands_stack.append(result)
                 case "fac":
                     if len(operands_stack) < 1:
-                        raise ValueError("Not enough operands for fac")
-                    operand1 = int(float(operands_stack.pop()))
+                        raise ValueError("Not enough operands for fac")                    
+                    operand_float = float(operands_stack.pop())                    
+                    if not operand_float.is_integer():
+                        raise TypeError("Factorial is only defined for integers")                        
+                    operand1 = int(operand_float)
                     result = fac(operand1)
                     operands_stack.append(result)
                 case "ln":
