@@ -105,7 +105,7 @@ def InfixToPostFix(parse_string):
                     stack_of_operators.append(i)
 
                 elif operator_precedence <= last_operator_precedence:
-                    while operator_precedence <= last_operator_precedence and len(stack_of_operators) > 0:
+                    while len(stack_of_operators) > 0 and (operator_precedence < last_operator_precedence or (operator_precedence == last_operator_precedence and i != "^")):
                         output_postfix+=stack_of_operators[-1] + " "
                         stack_of_operators.pop()
                         if len(stack_of_operators) > 0:
