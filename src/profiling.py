@@ -1,3 +1,8 @@
+"""! @file profiling.py
+@brief Profiling tool calculating deviation using the math library
+@author Kristian Duzek <xduzekk00>
+"""
+
 from mathlib import *
 import sys
 
@@ -21,5 +26,3 @@ s = div(s, N)
 s = sqt(s, 2)
 
 print(s)
-        
-        
