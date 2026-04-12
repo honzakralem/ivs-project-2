@@ -17,7 +17,7 @@
 - Ha Pham - xphamha00
 - Michal Holeša - xholesm00
 - Kristián Dúžek - xduzekk00
-- Adrián Stánik - xstania00
+- Adrián Staník - xstania00
 
 ## PRO VÝVOJÁŘE
 
