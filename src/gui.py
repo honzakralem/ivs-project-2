@@ -20,16 +20,27 @@ from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap, QFontM
 from infixtopost import InfixToPostFix, eval_postfix
 
 def read_version():
-    if getattr(sys, "frozen", False):
-        base_dir = sys._MEIPASS
-    else:
-        base_dir = os.path.dirname(__file__)
-    version_path = os.path.join(base_dir, "VERSION")
-    try:
-        with open(version_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
-    except OSError:
-        return "unknown"
+    candidates = []
+
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        candidates.append(os.path.join(sys._MEIPASS, "VERSION"))
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(here, ".."))
+    candidates.append(os.path.join(repo_root, "VERSION"))
+
+    candidates.append(os.path.join(here, "VERSION"))
+
+    for version_path in candidates:
+        try:
+            with open(version_path, "r", encoding="utf-8") as f:
+                v = f.read().strip()
+                if v:
+                    return v
+        except OSError:
+            pass
+
+    return "unknown"
 
 def resource_path(*parts):
     if getattr(sys, "frozen", False):
