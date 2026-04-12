@@ -168,6 +168,7 @@ jobs:
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ matrix.artifact_name }}
+          retention-days: 5
 
   # ==========================================
   # NEW JOB: Create Release if VERSION changed
