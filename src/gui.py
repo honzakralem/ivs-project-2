@@ -19,6 +19,11 @@ from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap, QFontM
 
 from infixtopost import InfixToPostFix, eval_postfix
 
+##
+#@brief Reads the application version string from a VERSION file.
+# Searches the PyInstaller bundle directory, repo root, and script directory in that order.
+#@return Version string from the first readable VERSION file, or "unknown" if none is found.
+#
 def read_version():
     candidates = []
 
@@ -42,6 +47,12 @@ def read_version():
 
     return "unknown"
 
+##
+#@brief Resolves a path to a bundled resource file.
+# Works in both normal and PyInstaller frozen environments by switching the base directory.
+#@param parts One or more path components joined after the base directory.
+#@return Absolute path to the resource.
+#
 def resource_path(*parts):
     if getattr(sys, "frozen", False):
         base = sys._MEIPASS
@@ -56,9 +67,8 @@ def resource_path(*parts):
 class CalculatorGUI(QMainWindow):
 
     ##
-    #@brief Initializes the main calculator window, setting its title and size.
+    #@brief Initializes the main calculator window, setting its title and fixed size.
     #@return None
-    #@param self instance reference
     #
     def __init__(self):
         super().__init__()
@@ -70,9 +80,8 @@ class CalculatorGUI(QMainWindow):
         self.initUI()
 
     ##
-    #@brief Constructs the user interface.
+    #@brief Constructs the user interface: menu bar, display, and button grid.
     #@return None
-    #@param self instance reference
     #
     def initUI(self):
         menubar = self.menuBar()
@@ -225,7 +234,6 @@ class CalculatorGUI(QMainWindow):
     ##
     #@brief Binds keyboard keys to calculator functions.
     #@return None
-    #@param self instance reference
     #
     def setup_shortcuts(self):
         self._shortcuts = []
@@ -260,11 +268,10 @@ class CalculatorGUI(QMainWindow):
             self._shortcuts.append(shortcut)
 
     ##
-    #@brief Updates the display text and manages cursor/alignment.
+    #@brief Sets the display text and repositions the cursor.
     #@return None
-    #@param self instance reference
-    #@param text The string to output to the calculator display
-    #@param align_left Boolean to determine if text should align to the left
+    #@param text The string to show in the calculator display.
+    #@param align_left If True, text aligns left and cursor moves to start; otherwise right-aligned with cursor at end.
     #
     def update_display(self, text, align_left=False):
         self.display.setText(text)
@@ -280,9 +287,8 @@ class CalculatorGUI(QMainWindow):
         self.display.setTextCursor(cursor)
 
     ##
-    #@brief Displays a pop-up dialog box with instructions on how to use the calculator.
+    #@brief Shows a usage guide dialog explaining how to enter expressions.
     #@return None
-    #@param self instance reference
     #
     def show_help(self):
         text = (
@@ -297,9 +303,8 @@ class CalculatorGUI(QMainWindow):
         QMessageBox.information(self, "Guide", text)
 
     ##
-    #@brief Displays a pop-up dialog box containing application version and author information.
+    #@brief Shows an About dialog with the application version and author list.
     #@return None
-    #@param self instance reference
     #
     def show_info(self):
         version = read_version()
@@ -338,9 +343,8 @@ class CalculatorGUI(QMainWindow):
         
 
     ##
-    #@brief Displays a pop-up dialog box listing the keyboard shortcuts.
+    #@brief Shows a dialog listing all keyboard shortcuts.
     #@return None
-    #@param self instance reference
     #
     def show_controls(self):
         text = (
@@ -357,10 +361,9 @@ class CalculatorGUI(QMainWindow):
         QMessageBox.information(self, "Controls", text)
 
     ##
-    #@brief Toggles the application theme between Light and Dark mode.
+    #@brief Switches the application stylesheet between dark and light mode.
     #@return None
-    #@param self instance reference
-    #@param checked Boolean state of the menu toggle
+    #@param checked True to apply the dark theme, False for light.
     #
     def toggle_theme(self, checked):
         if checked:
@@ -371,10 +374,9 @@ class CalculatorGUI(QMainWindow):
             self.theme_btn.setText('🌙  Dark Mode')
 
     ##
-    #@brief Handles button click events, updating the display or triggering evaluation.
+    #@brief Handles a button click, updating the display or evaluating the expression.
     #@return None
-    #@param self instance reference
-    #@param text The label of the button that was clicked
+    #@param text Label of the clicked button (e.g. '7', '+', '=', 'DEL').
     #
     def on_button_click(self, text):
         curr = self.display.toPlainText()
