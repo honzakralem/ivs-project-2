@@ -99,14 +99,28 @@ class CalculatorGUI(QMainWindow):
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
-        self.theme_btn = QPushButton('☀  Light Mode', self)
+        help_action.setShortcut(QKeySequence("Ctrl+H"))
+        help_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        controls_action.setShortcut(QKeySequence("Ctrl+K"))
+        controls_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        info_action.setShortcut(QKeySequence("Ctrl+I"))
+        info_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        self.theme_btn = QPushButton('☀', self)
         self.theme_btn.setCheckable(True)
         self.theme_btn.setChecked(True)
         self.theme_btn.setFlat(True)
         self.theme_btn.setCursor(Qt.PointingHandCursor)
         self.theme_btn.setObjectName("themeToggle")
-        self.theme_btn.clicked.connect(self.toggle_theme)
+        self.theme_btn.toggled.connect(self.toggle_theme)
         menubar.setCornerWidget(self.theme_btn, Qt.TopRightCorner)
+        self.toggle_theme_action = QAction(self)
+        self.toggle_theme_action.setShortcut(QKeySequence("Ctrl+M"))
+        self.toggle_theme_action.setShortcutContext(Qt.ApplicationShortcut)
+        self.toggle_theme_action.triggered.connect(self.theme_btn.toggle)
+        self.addAction(self.toggle_theme_action)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -226,9 +240,8 @@ class CalculatorGUI(QMainWindow):
             QTextEdit { background-color: #1e1e1e; color: #eeeeee; border: 3px solid #555; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #333333; }
         """
-
-        self.setStyleSheet(self.dark_theme)
-
+        
+        self.toggle_theme(self.theme_btn.isChecked())
         self.setup_shortcuts()
 
     ##
@@ -299,6 +312,8 @@ class CalculatorGUI(QMainWindow):
             "• If you want to enter a negative number or a longer expression into an operation (like √, ln, n!), use parentheses '()'. (e.g., '3 √ (-8)' or 'ln (5+2)').\n"
             "• 'C' clears the entire display, 'DEL' deletes the last character.\n"
             "• After pressing '=', the expression is evaluated."
+            "\n"
+            "• Use the top-right theme button (☀/🌙) to switch between dark and light mode.\n"
         )
         QMessageBox.information(self, "Guide", text)
 
@@ -357,6 +372,11 @@ class CalculatorGUI(QMainWindow):
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
             "• Escape or Delete : Clear entire display (C)\n"
+            "\n"
+            "• Ctrl+H : Open Guide\n"
+            "• Ctrl+M : Toggle dark/light mode\n"
+            "• Ctrl+K : Open Controls\n"
+            "• Ctrl+I : Open About\n"
         )
         QMessageBox.information(self, "Controls", text)
 
@@ -368,10 +388,10 @@ class CalculatorGUI(QMainWindow):
     def toggle_theme(self, checked):
         if checked:
             self.setStyleSheet(self.dark_theme)
-            self.theme_btn.setText('☀  Light Mode')
+            self.theme_btn.setText('☀')
         else:
             self.setStyleSheet(self.light_theme)
-            self.theme_btn.setText('🌙  Dark Mode')
+            self.theme_btn.setText('🌙')
 
     ##
     #@brief Handles a button click, updating the display or evaluating the expression.
