@@ -413,9 +413,9 @@ class CalculatorGUI(QMainWindow):
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith(('√', '!', '^', '×', '÷', '%', '+', '-', '(', ')')):
+            if stripped.endswith(('!', '^', '×', '÷', '%', '+', '-', '(', ')')):
                 self.update_display(stripped[:-2])
-            elif stripped.endswith('ln'):
+            elif stripped.endswith(('ln', '√')):
                 self.update_display(stripped[:-3])
             else:
                 self.update_display(stripped[:-1])
