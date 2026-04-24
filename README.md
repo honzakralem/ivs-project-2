@@ -18,7 +18,9 @@
 - Michal Holeša - xholesm00
 - Kristián Dúžek - xduzekk00
 - Adrián Staník - xstania00
+## PRO UŽIVATELE
 
+Doporučuje se přečíst [manuál pro uživatele](src/doc/IVS2_user_man.pdf). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
 ## PRO VÝVOJÁŘE
 
 Doporučuje se přečíst [manuál pro programátory](src/doc/IVS2_prog_man.pdf). Je často aktualizován a je v něm uvedeno pro jakou verzi a datum je aktuální.
