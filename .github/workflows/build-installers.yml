@@ -79,7 +79,7 @@ jobs:
           [Desktop Entry]
           Type=Application
           Name=INTERCALCULATOR $VER
-          Exec=env QT_QPA_PLATFORM=xcb /usr/local/bin/intercalculator
+          Exec=/usr/local/bin/intercalculator
           Terminal=false
           Categories=Utility;Calculator;
           Icon=intercalculator
@@ -127,7 +127,7 @@ jobs:
 
           echo '[Run]' >> installer.iss
           echo 'Filename: "{app}\INTERCALCULATOR.exe"; Description: "{cm:LaunchProgram,INTERCALCULATOR}"; Flags: nowait postinstall skipifsilent' >> installer.iss
-          
+
           echo '[Tasks]' >> installer.iss
           echo 'Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked' >> installer.iss
 

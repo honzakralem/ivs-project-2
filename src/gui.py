@@ -531,6 +531,13 @@ class CalculatorGUI(QMainWindow):
 
 
 if __name__ == "__main__":
+    if sys.platform.startswith("linux"):
+        os.environ["QT_QPA_PLATFORM"] = "wayland;xcb"
+
+    app = QApplication(sys.argv)
+    window = CalculatorGUI()
+    window.show()
+    sys.exit(app.exec_())
     app = QApplication(sys.argv)
     window = CalculatorGUI()
     window.show()
