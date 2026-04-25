@@ -31,6 +31,7 @@ run:
 rmenv:
 	@rm -rf $(VENVNAME)
 
+#Runs profiler with generated inputs, creates outputs
 profile:
 	@mkdir -p $(PROFILEDIR)
 	@mkdir -p $(INPUTDIR)
@@ -69,4 +70,3 @@ help:
 #Removes temporary files and files not meant to be handed
 clean:
 	@rm -rf $(TOBECLEANED)
-	@rm -f $(PROFILEDIR)/*
