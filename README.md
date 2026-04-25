@@ -1,10 +1,14 @@
-# INTERCALCULATOR
+<p align="center">
+  <img src="./src/assets/icon-no-text.png" alt="alt text" width="64">
+</p>
+
+<h1 align="center">INTERCALCULATOR</h1>
 
 ## PROSTŘEDÍ
-- Ubuntu 64-bit 
-- Fedora 64-bit
-- Windows 64-bit
-- macOS 64-bit
+
+- Windows 10/11
+- macOS 15+
+- Ubuntu 24.04+
 
 ## AUTOŘI
 
@@ -13,9 +17,14 @@
 - Ha Pham - xphamha00
 - Michal Holeša - xholesm00
 - Kristián Dúžek - xduzekk00
-- Adrián Stánik - xstania00
+- Adrián Staník - xstania00
+
+## PRO UŽIVATELE
+
+Doporučuje se přečíst [manuál pro uživatele](src/doc/IVS2_user_man.pdf). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
 
 ## PRO VÝVOJÁŘE
+
 Doporučuje se přečíst [manuál pro programátory](src/doc/IVS2_prog_man.pdf). Je často aktualizován a je v něm uvedeno pro jakou verzi a datum je aktuální.
 
 ## LICENCE

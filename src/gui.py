@@ -10,26 +10,56 @@
 
 import os
 import sys
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, 
-                             QVBoxLayout, QGridLayout, QTextEdit, 
+
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QLabel, 
+                             QVBoxLayout, QGridLayout, QTextEdit, QDialog, 
                              QPushButton, QMessageBox, QAction, QShortcut)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QTextCursor, QKeySequence
+from PyQt5.QtGui import QFont, QTextCursor, QKeySequence, QIcon, QPixmap, QFontMetrics
 
 from infixtopost import InfixToPostFix, eval_postfix
 
+##
+#@brief Reads the application version string from a VERSION file.
+# Searches the PyInstaller bundle directory, repo root, and script directory in that order.
+#@return Version string from the first readable VERSION file, or "unknown" if none is found.
+#
 def read_version():
+    candidates = []
+
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        candidates.append(os.path.join(sys._MEIPASS, "VERSION"))
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(here, ".."))
+    candidates.append(os.path.join(repo_root, "VERSION"))
+
+    candidates.append(os.path.join(here, "VERSION"))
+
+    for version_path in candidates:
+        try:
+            with open(version_path, "r", encoding="utf-8") as f:
+                v = f.read().strip()
+                if v:
+                    return v
+        except OSError:
+            pass
+
+    return "unknown"
+
+##
+#@brief Resolves a path to a bundled resource file.
+# Works in both normal and PyInstaller frozen environments by switching the base directory.
+#@param parts One or more path components joined after the base directory.
+#@return Absolute path to the resource.
+#
+def resource_path(*parts):
     if getattr(sys, "frozen", False):
-        base_dir = sys._MEIPASS
+        base = sys._MEIPASS
     else:
-        base_dir = os.path.dirname(__file__)
-    version_path = os.path.join(base_dir, "VERSION")
-    try:
-        with open(version_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
-    except OSError:
-        return "unknown"
-    
+        base = os.path.dirname(__file__)
+    return os.path.join(base, *parts)
+
 ##
 #@brief Main window class for the INTERCALCULATOR application.
 # Inherits from QMainWindow to provide a standard application window frame.
@@ -37,21 +67,21 @@ def read_version():
 class CalculatorGUI(QMainWindow):
 
     ##
-    #@brief Initializes the main calculator window, setting its title and size.
+    #@brief Initializes the main calculator window, setting its title and fixed size.
     #@return None
-    #@param self instance reference
     #
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon(resource_path("assets", "icon-no-text.png")))
         version = read_version()
         self.setWindowTitle(f"INTERCALCULATOR v{version}")
         self.setFixedSize(600, 750)
+        self.new_calculation = False 
         self.initUI()
 
     ##
-    #@brief Constructs the user interface.
+    #@brief Constructs the user interface: menu bar, display, and button grid.
     #@return None
-    #@param self instance reference
     #
     def initUI(self):
         menubar = self.menuBar()
@@ -61,13 +91,36 @@ class CalculatorGUI(QMainWindow):
         help_action.triggered.connect(self.show_help)
         menubar.addAction(help_action)
 
+        controls_action = QAction('Controls', self)
+        controls_action.triggered.connect(self.show_controls)
+        menubar.addAction(controls_action)
+
         info_action = QAction('About', self)
         info_action.triggered.connect(self.show_info)
         menubar.addAction(info_action)
 
-        controls_action = QAction('Controls', self)
-        controls_action.triggered.connect(self.show_controls)
-        menubar.addAction(controls_action)
+        help_action.setShortcut(QKeySequence("Ctrl+H"))
+        help_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        controls_action.setShortcut(QKeySequence("Ctrl+K"))
+        controls_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        info_action.setShortcut(QKeySequence("Ctrl+I"))
+        info_action.setShortcutContext(Qt.ApplicationShortcut)
+
+        self.theme_btn = QPushButton('☀', self)
+        self.theme_btn.setCheckable(True)
+        self.theme_btn.setChecked(True)
+        self.theme_btn.setFlat(True)
+        self.theme_btn.setCursor(Qt.PointingHandCursor)
+        self.theme_btn.setObjectName("themeToggle")
+        self.theme_btn.toggled.connect(self.toggle_theme)
+        menubar.setCornerWidget(self.theme_btn, Qt.TopRightCorner)
+        self.toggle_theme_action = QAction(self)
+        self.toggle_theme_action.setShortcut(QKeySequence("Ctrl+M"))
+        self.toggle_theme_action.setShortcutContext(Qt.ApplicationShortcut)
+        self.toggle_theme_action.triggered.connect(self.theme_btn.toggle)
+        self.addAction(self.toggle_theme_action)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -76,7 +129,7 @@ class CalculatorGUI(QMainWindow):
         self.central_widget.setLayout(self.layout)
 
         self.display = QTextEdit()
-        self.display.setFixedHeight(100)
+        self.display.setFixedHeight(115)
         self.display.setReadOnly(True)
         self.display.setFont(QFont("Arial", 28))
         self.display.setLineWrapMode(QTextEdit.NoWrap)
@@ -114,10 +167,24 @@ class CalculatorGUI(QMainWindow):
 
             self.grid.addWidget(btn, pos[0], pos[1])
 
-        self.setStyleSheet("""
+        self.light_theme = """
+            QPushButton#themeToggle {
+                background-color: #ffffff;
+                color: #222222;
+                border: 2px solid #cccccc;
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-weight: bold;
+            }
+            QPushButton#themeToggle:hover {
+                background-color: #f0f0f0;
+            }
+            QPushButton#themeToggle:pressed {
+                background-color: #e0e0e0;
+            }
             QMainWindow, QWidget { background-color: #f2f2f2; color: #111; }
                            
-            QPushButton { border-radius: 8px; border: 2px solid #ccc; }
+            QPushButton { border-radius: 8px; border: 2px solid #ccc; color: #111; }
             QPushButton[btnClass="number"] { background-color: #ffffff; }
             QPushButton[btnClass="number"]:pressed { background-color: #e0e0e0; }
                            
@@ -127,18 +194,63 @@ class CalculatorGUI(QMainWindow):
             QPushButton[btnClass="control"] { background-color: #fadbd8; }
             QPushButton[btnClass="control"]:pressed { background-color: #f5b7b1; }
                            
-            QTextEdit { background-color: #fff; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
+            QTextEdit { background-color: #fff; color: #111; border: 3px solid #ccc; border-radius: 8px; padding: 10px; }
             QScrollBar:horizontal { height: 12px; background-color: #f0f0f0; }
-        """)
+        """
 
+        self.dark_theme = """
+            QPushButton#themeToggle {
+                background-color: #3a3a3a;
+                color: #f5f5f5;
+                border: 2px solid #666666;
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-weight: bold;
+            }
+            QPushButton#themeToggle:hover {
+                background-color: #4a4a4a;
+            }
+            QPushButton#themeToggle:pressed {
+                background-color: #2f2f2f;
+            }
+            QMenuBar {
+                background-color: #2b2b2b;
+                color: #eeeeee;
+            }
+            QMenuBar::item {
+                background: transparent;
+                padding: 4px 10px;
+            }
+            QMenuBar::item:selected {
+                background: #3a3a3a;
+            }
+
+            QMainWindow, QWidget { background-color: #2b2b2b; color: #eeeeee; }
+                           
+            QPushButton { border-radius: 8px; border: 2px solid #555; color: #eeeeee; }
+            QPushButton[btnClass="number"] { background-color: #3c3f41; }
+            QPushButton[btnClass="number"]:pressed { background-color: #555555; }
+                           
+            QPushButton[btnClass="operator"] { background-color: #1a5276; }
+            QPushButton[btnClass="operator"]:pressed { background-color: #2980b9; }
+                           
+            QPushButton[btnClass="control"] { background-color: #7b241c; }
+            QPushButton[btnClass="control"]:pressed { background-color: #922b21; }
+                           
+            QTextEdit { background-color: #1e1e1e; color: #eeeeee; border: 3px solid #555; border-radius: 8px; padding: 10px; }
+            QScrollBar:horizontal { height: 12px; background-color: #333333; }
+        """
+        
+        self.toggle_theme(self.theme_btn.isChecked())
         self.setup_shortcuts()
 
     ##
     #@brief Binds keyboard keys to calculator functions.
     #@return None
-    #@param self instance reference
     #
     def setup_shortcuts(self):
+        self._shortcuts = []
+
         for key in '0123456789.+-*/%^()':
             shortcut = QShortcut(QKeySequence(key), self)
             if key == '*':
@@ -149,6 +261,7 @@ class CalculatorGUI(QMainWindow):
                 shortcut.activated.connect(lambda k='xʸ': self.on_button_click(k))
             else:
                 shortcut.activated.connect(lambda k=key: self.on_button_click(k))
+            self._shortcuts.append(shortcut)
 
         special_keys = {
             Qt.Key_Comma: '.',
@@ -165,60 +278,88 @@ class CalculatorGUI(QMainWindow):
         for key, action in special_keys.items():
             shortcut = QShortcut(QKeySequence(key), self)
             shortcut.activated.connect(lambda a=action: self.on_button_click(a))
+            self._shortcuts.append(shortcut)
 
     ##
-    #@brief Updates the display text and ensures the cursor remains at the end.
+    #@brief Sets the display text and repositions the cursor.
     #@return None
-    #@param self instance reference
-    #@param text The string to output to the calculator display
+    #@param text The string to show in the calculator display.
+    #@param align_left If True, text aligns left and cursor moves to start; otherwise right-aligned with cursor at end.
     #
-    def update_display(self, text):
+    def update_display(self, text, align_left=False):
         self.display.setText(text)
-        self.display.setAlignment(Qt.AlignRight)
-    
+        
         cursor = self.display.textCursor()
-        cursor.movePosition(QTextCursor.End)
+        if align_left:
+            self.display.setAlignment(Qt.AlignLeft)
+            cursor.movePosition(QTextCursor.Start)
+        else:
+            self.display.setAlignment(Qt.AlignRight)
+            cursor.movePosition(QTextCursor.End)
+            
         self.display.setTextCursor(cursor)
 
     ##
-    #@brief Displays a pop-up dialog box with instructions on how to use the calculator.
+    #@brief Shows a usage guide dialog explaining how to enter expressions.
     #@return None
-    #@param self instance reference
     #
     def show_help(self):
         text = (
             "Simple guide:\n\n"
-            "- Enter the mathematical expression conventionally (infix).\n"
-            "- Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
-            "- Root operation (√): Behaves like a binary operator, enter in the format 'base √ degree'.\n"
-            "- 'C' clears the entire display, 'DEL' deletes the last character.\n"
-            "- After pressing '=', the expression is evaluated."
+            "• Enter the mathematical expression conventionally (infix).\n"
+            "• Single-operand operations (n!, ln): Enter the number first, then the operator. (e.g., '5 n!')\n"
+            "• Root operation (√): Behaves like a binary operator, enter in the format 'degree √ base'. If degree is negative the formula used is base^(1/degree).\n"
+            "• If you want to enter a negative number or a longer expression into an operation (like √, ln, n!), use parentheses '()'. (e.g., '3 √ (-8)' or 'ln (5+2)').\n"
+            "• 'C' clears the entire display, 'DEL' deletes the last character.\n"
+            "• After pressing '=', the expression is evaluated."
+            "\n"
+            "• Use the top-right theme button (☀/🌙) to switch between dark and light mode.\n"
         )
         QMessageBox.information(self, "Guide", text)
 
     ##
-    #@brief Displays a pop-up dialog box containing application version and author information.
+    #@brief Shows an About dialog with the application version and author list.
     #@return None
-    #@param self instance reference
     #
     def show_info(self):
         version = read_version()
-        text = (
-            "INTERCALCULATOR\n\n"
-            f"Version: {version}\n"
-            "\n"
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("About")
+        dialog.setWindowFlags(
+            dialog.windowFlags() & ~Qt.WindowContextHelpButtonHint
+        )
+
+        layout = QVBoxLayout(dialog)
+
+        title = QLabel("INTERCALCULATOR")
+        title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("font-weight: bold; font-size: 18px;")
+        layout.addWidget(title)
+
+        icon_label = QLabel()
+        pix = QPixmap(resource_path("assets", "icon-512.png"))
+        icon_label.setPixmap(pix.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        icon_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(icon_label)
+
+        info = QLabel(
+            f"Version: {version}\n\n"
             "Authors:\n"
             "• Ha Pham <xphamha00>\n"
-            "• Kristian Duzek <xduzekk00>\n"
-            "• Michal Holesa <xholesm00>\n"
-            "• Adrian Stanik <xstania00>\n"
-            )
-        QMessageBox.information(self, "About", text)
+            "• Kristián Dúžek <xduzekk00>\n"
+            "• Michal Holeša <xholesm00>\n"
+            "• Adrián Staník <xstania00>\n"
+        )
+        info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(info)
+
+        dialog.exec_()
+        
 
     ##
-    #@brief Displays a pop-up dialog box listing the keyboard shortcuts.
+    #@brief Shows a dialog listing all keyboard shortcuts.
     #@return None
-    #@param self instance reference
     #
     def show_controls(self):
         text = (
@@ -226,32 +367,56 @@ class CalculatorGUI(QMainWindow):
             "• 0-9, +, -, ×, ÷, %, xʸ, (, ) : Standard input\n"
             "• . or , (Comma) : Decimal point\n"
             "• ! (Exclamation) : Factorial (n!)\n"
-            "• S : Root (x √ y)\n"
+            "• S : Root (degree √ base)\n"
             "• L : Natural logarithm (ln)\n"
             "• Enter or Return : Evaluate (=)\n"
             "• Backspace : Delete last character (DEL)\n"
             "• Escape or Delete : Clear entire display (C)\n"
+            "\n"
+            "• Ctrl+H : Open Guide\n"
+            "• Ctrl+M : Toggle dark/light mode\n"
+            "• Ctrl+K : Open Controls\n"
+            "• Ctrl+I : Open About\n"
         )
         QMessageBox.information(self, "Controls", text)
 
     ##
-    #@brief Handles button click events, updating the display or triggering evaluation.
+    #@brief Switches the application stylesheet between dark and light mode.
     #@return None
-    #@param self instance reference
-    #@param text The label of the button that was clicked
+    #@param checked True to apply the dark theme, False for light.
+    #
+    def toggle_theme(self, checked):
+        if checked:
+            self.setStyleSheet(self.dark_theme)
+            self.theme_btn.setText('☀')
+        else:
+            self.setStyleSheet(self.light_theme)
+            self.theme_btn.setText('🌙')
+
+    ##
+    #@brief Handles a button click, updating the display or evaluating the expression.
+    #@return None
+    #@param text Label of the clicked button (e.g. '7', '+', '=', 'DEL').
     #
     def on_button_click(self, text):
         curr = self.display.toPlainText()
+
+        if getattr(self, 'new_calculation', False):
+            self.new_calculation = False
+            
+            if text not in ['+', '-', '×', '÷', '%', 'xʸ', '^', '=', 'C', 'DEL']:
+                self.display.clear()
+                curr = ""
 
         if text == 'C':
             self.display.clear()
         
         elif text == 'DEL':
             stripped = curr.rstrip()
-            if stripped.endswith(('√', '!', '^', '×', '÷')):
-                self.update_display(stripped[:-1])
-            elif stripped.endswith('ln'):
+            if stripped.endswith(('!', '^', '×', '÷', '%', '+', '-', '(', ')')):
                 self.update_display(stripped[:-2])
+            elif stripped.endswith(('ln', '√')):
+                self.update_display(stripped[:-3])
             else:
                 self.update_display(stripped[:-1])
         
@@ -267,6 +432,12 @@ class CalculatorGUI(QMainWindow):
                         .replace('×', '*')
                         .replace('÷', '/')
                 )
+
+                eval_string = eval_string.strip()
+                if eval_string.startswith('- '):
+                    eval_string = "0 " + eval_string
+                eval_string = eval_string.replace('( - ', '( 0 - ')
+
                 postfix = InfixToPostFix(eval_string)
                 res = eval_postfix(postfix)
                 
@@ -275,11 +446,19 @@ class CalculatorGUI(QMainWindow):
                 else:
                     res = round(res, 10)
                     
-                self.update_display(str(res))
+                res_str = str(res)
+                
+                font_metrics = QFontMetrics(self.display.font())
+                text_width = font_metrics.boundingRect(res_str).width()
+                available_width = self.display.viewport().width() - 25   
+                is_too_long = text_width > available_width
+                    
+                self.update_display(res_str, align_left=is_too_long)
+
+                self.new_calculation = True 
             
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Invalid expression:\n{e}")
-                self.display.clear()
         
         else:
             if text == 'xʸ':
@@ -290,7 +469,7 @@ class CalculatorGUI(QMainWindow):
             ops = ['+', '-', '×', '÷', '%', '^', '√', 'ln', '!', '(', ')']
             binary_ops = ['+', '×', '÷', '%', '^']
 
-            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!', '√']:
+            if not curr.strip() and text in ['+', '-', '×', '÷', '%', '^', '!']:
                 self.update_display("0")
                 curr = "0"
 
@@ -314,16 +493,31 @@ class CalculatorGUI(QMainWindow):
                 else:
                     self.update_display(curr + "2 √ ")
                 return
+            
+            if text == '(':
+                stripped = curr.rstrip()
+                if stripped and stripped[-1].isdigit():
+                    self.update_display(stripped + " × ( ")
+                    return
+                if stripped and stripped[-1].endswith(')'):
+                    self.update_display(stripped + " × ( ")
+                    return
 
             if curr.strip() and (text in binary_ops or text in ['-', '√', 'ln', '!']):
                 stripped = curr.rstrip()
 
                 if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
-                    stripped = stripped[:-1].rstrip()
-
-                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                    if stripped.endswith('ln'):
+                        stripped = stripped[:-2].rstrip()
+                    else:
                         stripped = stripped[:-1].rstrip()
 
+                    if stripped.endswith(('+', '-', '×', '÷', '%', '^', '√', 'ln', '!')):
+                        if stripped.endswith('ln'):
+                            stripped = stripped[:-2].rstrip()
+                        else:
+                            stripped = stripped[:-1].rstrip()
+                            
                     self.update_display(stripped)
                     curr = self.display.toPlainText()
 
@@ -337,6 +531,13 @@ class CalculatorGUI(QMainWindow):
 
 
 if __name__ == "__main__":
+    if sys.platform.startswith("linux"):
+        os.environ["QT_QPA_PLATFORM"] = "wayland;xcb"
+
+    app = QApplication(sys.argv)
+    window = CalculatorGUI()
+    window.show()
+    sys.exit(app.exec_())
     app = QApplication(sys.argv)
     window = CalculatorGUI()
     window.show()
