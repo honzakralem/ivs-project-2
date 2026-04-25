@@ -1,15 +1,14 @@
-"""! @file generate.py
+"""! @file generate.py 
 @brief Profiling tool for generating input data files for profiling.
-@author Kristian Duzek <xduzekk00>
+@author Kristian Duzek <xduzekk00> 
 """
 
 import random
+import sys
 
-def generate(filename, n):
-    with open(filename, "w") as f:
-        for _ in range(n):
-            f.write(str(random.randint(0, 100)) + " ")
+random.seed(42)
 
-generate("data1.txt", 10)
-generate("data2.txt", 1000)
-generate("data3.txt", 1000000)
+n = int(sys.argv[1])
+
+for _ in range(n):
+    print(random.randint(0,100), end=" ")

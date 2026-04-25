@@ -70,6 +70,8 @@ def mod(a,b):
 #@param b exponent
 #
 def pow(a,b):
+    if b == 2:
+        return a*a
     return math.pow(a,b)
 
 ##
@@ -85,9 +87,12 @@ def sqt(a,b):
         raise ValueError("Root degree cannot be zero")
     if a < 0 and b % 2 == 0:
         raise ValueError("Even root of negative number is not real")
-
+    
+    if b == 2:
+        return math.sqrt(a)
     if a < 0 and b % 2 != 0:
         return -((-a) ** (1/b))
+
     return a ** (1 / b)
 
 ##
