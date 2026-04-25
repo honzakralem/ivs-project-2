@@ -6,7 +6,9 @@
 import random
 import sys
 
+
 random.seed(42)
+
 
 n = int(sys.argv[1])
 
