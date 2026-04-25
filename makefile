@@ -34,7 +34,6 @@ rmenv:
 
 #Runs profiler with generated inputs, creates outputs
 profile:
-	@mkdir -p $(PROFILEDIR)
 	@mkdir -p $(INPUTDIR)
 
 	@$(PYTHON) src/generate.py 10 > $(INPUTDIR)/input10.txt
