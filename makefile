@@ -56,6 +56,8 @@ rmenv:
 
 #Runs profiler with generated inputs, creates outputs
 stddev:
+	-@$(MKDIR) $(INPUTDIR)
+
 	@$(PYTHON) src$(SEP)generate.py 10 > $(INPUTDIR)$(SEP)input10.txt
 	@$(PYTHON) src$(SEP)generate.py 1000 > $(INPUTDIR)$(SEP)input1000.txt
 	@$(PYTHON) src$(SEP)generate.py 1000000 > $(INPUTDIR)$(SEP)input1000000.txt
