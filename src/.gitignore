@@ -1,0 +1,3 @@
+.pytest_cache
+pycache
+data*.txt
