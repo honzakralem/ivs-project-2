@@ -5,7 +5,7 @@
 @file gui.py
 @brief GUI for INTERCALCULATOR, Graphical user interface implementation using PyQt5.
 @date 3.4.2026
-@author Michal Holesa <xholesm00> Adrian Stanik <xstania00>
+@author Michal Holesa Adrian Stanik 
 """
 
 import os
