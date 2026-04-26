@@ -1,3 +1,6 @@
+env
 .pytest_cache
-__pycache__
-data*.txt
+src/doc/html/
+src/doc/latex/
+inputs
+xphamha00_xduzekk00_xholesm00_xstania00.zip

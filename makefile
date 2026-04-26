@@ -2,10 +2,11 @@
 
 #DETECT OS
 ifeq ($(OS),Windows_NT)
-    SEP := $(strip \ )
+    empty :=
+    SEP := \$(empty)
     RM := del /f /q
     RMDIR := rd /s /q
-    MV := move
+    MV := cmd /c move
     MKDIR := mkdir
     PYTHON := python
 else
@@ -26,14 +27,14 @@ PATHTODOCDIR=src$(SEP)doc
 INPUTDIR=inputs
 PROFILEDIR=profiling
 ZIPNAME=xphamha00_xduzekk00_xholesm00_xstania00.zip
-FILETOBEZIPPED=src mockup plan profiling makefile README.md stddev LICENSE VERSION install.sh ubuntu_dependencies.txt src$(SEP)requirements.txt 
+FILETOBEZIPPED=src mockup plan profiling makefile README.md LICENSE VERSION
 SETUPSCRIPT=src$(SEP)setup.py
 RUNSCRIPT=src$(SEP)gui.py
 PROFILINGSCRIPT=profiling.py
 TESTFRAMEWORK=pytest
 
 #Creates virtual environment and downloads all dependencies
-all: 
+all:
 	@$(PYTHON) $(SETUPSCRIPT)
 
 #Creates doxygen documentation into PATHTODOCDIR
@@ -42,10 +43,10 @@ doc:
 
 #Removes doxygen documentation from PATHTODOCDIR
 rmdox:
-	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)html 
+	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)html
 	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)latex
 
-#Launches the calculator	
+#Launches the calculator
 run:
 	@$(PYTHON) $(RUNSCRIPT)
 
@@ -55,11 +56,6 @@ rmenv:
 
 #Runs profiler with generated inputs, creates outputs
 stddev:
-	-@$(RMDIR) $(INPUTDIR)
-	-@$(MKDIR) $(INPUTDIR)
-	-@$(RMDIR) $(PROFILEDIR)
-	-@$(MKDIR) $(PROFILEDIR)
-
 	@$(PYTHON) src$(SEP)generate.py 10 > $(INPUTDIR)$(SEP)input10.txt
 	@$(PYTHON) src$(SEP)generate.py 1000 > $(INPUTDIR)$(SEP)input1000.txt
 	@$(PYTHON) src$(SEP)generate.py 1000000 > $(INPUTDIR)$(SEP)input1000000.txt
@@ -73,28 +69,51 @@ stddev:
 	@$(PYTHON) src$(SEP)$(PROFILINGSCRIPT) < $(INPUTDIR)$(SEP)input1000000.txt
 	@$(MV) stats.prof $(PROFILEDIR)$(SEP)profile_1000000.prof
 
+ifeq ($(OS),Windows_NT)
+	@echo Profiling completed.
+else
 	@echo "Profiling completed."
+endif
 
 #Runs tests for TESTFILES
-test: 
+test:
+ifeq ($(OS),Windows_NT)
+	@$(TESTFRAMEWORK) $(TESTFILES) && echo All tests have passed! || echo Tests did not pass!
+else
 	@$(TESTFRAMEWORK) $(TESTFILES) && echo "All tests have passed!" || echo "Tests did not pass!"
+endif
 
 #Prints out "manual" for makefile
 help:
+ifeq ($(OS),Windows_NT)
+	@echo make all / make -- Creates virtual environment and installs all dependencies
+	@echo make test -- Runs all tests
+	@echo make doc -- Creates doxygen documentation into $(PATHTODOCDIR)
+	@echo make rmdox -- Removes generated doxygen files
+	@echo make run -- Runs the calculator application
+	@echo make rmenv -- Deletes the virtual environment directory
+	@echo make stddev -- Generates inputs and runs profiling
+	@echo make clean -- Cleans temporary files and files not meant to be handed over
+	@echo make pack -- Packs the project into a zip archive
+else
 	@echo "make all / make -- Creates virtual environment and installs all dependencies"
 	@echo "make test -- Runs all tests"
 	@echo "make doc -- Creates doxygen documentation into $(PATHTODOCDIR)"
 	@echo "make rmdox -- Removes generated doxygen files"
 	@echo "make run -- Runs the calculator application"
 	@echo "make rmenv -- Deletes the virtual environment directory"
-	@echo "make generate -- Generates profiling input files"
 	@echo "make stddev -- Generates inputs and runs profiling"
 	@echo "make clean -- Cleans temporary files and files not meant to be handed over"
-	@echo "make pack -- Packs the projects into a zip archive"
+	@echo "make pack -- Packs the project into a zip archive"
+endif
 
 # Archives project - clean before
-pack: clean 
-	@zip $(ZIPNAME) $(FILETOBEZIPPED)
+pack: clean
+ifeq ($(OS),Windows_NT)
+	@tar -a -cf $(ZIPNAME) $(FILETOBEZIPPED)
+else
+	@zip -r $(ZIPNAME) $(FILETOBEZIPPED)
+endif
 
 #Removes temporary files and files not meant to be handed
 clean: rmdox rmenv
@@ -103,6 +122,3 @@ clean: rmdox rmenv
 	-@$(RMDIR) __pycache__
 	-@$(RMDIR) src$(SEP)__pycache__
 	-@$(RMDIR) $(INPUTDIR)
-	-@$(RMDIR) $(INPUTDIR)
-	-@$(RMDIR) $(PROFILEDIR)
-
