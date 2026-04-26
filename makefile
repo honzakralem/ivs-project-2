@@ -1,20 +1,40 @@
 .PHONY: venv rmenv clean all test doc help run rmdox stddev pack
 
+#DETECT OS
+ifeq ($(OS),Windows_NT)
+    SEP := $(strip \ )
+    RM := del /f /q
+    RMDIR := rd /s /q
+    MV := move
+    MKDIR := mkdir
+    PYTHON := python
+else
+    SEP := /
+    RM := rm -f
+    RMDIR := rm -rf
+    MV := mv
+    MKDIR := mkdir -p
+    PYTHON := python3
+endif
+
 #CONFIGURATION
 VENVNAME=env
-REQUIREMENTSPATH=src/requirements.txt
-PYTHON=python3
-TESTFILES=src/infixtopost_test.py src/mathlib_test.py
-PATHTODOXYFILE=src/Doxyfile
-PATHTODOCDIR=src/doc
+REQUIREMENTSPATH=src$(SEP)requirements.txt
+TESTFILES=src$(SEP)infixtopost_test.py src$(SEP)mathlib_test.py
+PATHTODOXYFILE=src$(SEP)Doxyfile
+PATHTODOCDIR=src$(SEP)doc
 INPUTDIR=inputs
 PROFILEDIR=profiling
-TOBECLEANED=.pytest_cache src/.pytest_cache __pycache__ src/__pycache__ inputs
 ZIPNAME=xphamha00_xduzekk00_xholesm00_xstania00.zip
-FILETOBEZIPPED=src mockup plan profiling makefile README.md stddev LICENSE VERSION install.sh ubuntu_dependencies.txt src/requirements.txt 
+FILETOBEZIPPED=src mockup plan profiling makefile README.md stddev LICENSE VERSION install.sh ubuntu_dependencies.txt src$(SEP)requirements.txt 
+SETUPSCRIPT=src$(SEP)setup.py
+RUNSCRIPT=src$(SEP)gui.py
+PROFILINGSCRIPT=profiling.py
+TESTFRAMEWORK=pytest
+
 #Creates virtual environment and downloads all dependencies
 all: 
-	@$(PYTHON) src/setup.py
+	@$(PYTHON) $(SETUPSCRIPT)
 
 #Creates doxygen documentation into PATHTODOCDIR
 doc:
@@ -22,43 +42,46 @@ doc:
 
 #Removes doxygen documentation from PATHTODOCDIR
 rmdox:
-	@rm -rf $(PATHTODOCDIR)/html $(PATHTODOCDIR)/latex
+	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)html 
+	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)latex
 
 #Launches the calculator	
 run:
-	@$(PYTHON) src/gui.py
+	@$(PYTHON) $(RUNSCRIPT)
 
 #Removes virtual environment
 rmenv:
-	@rm -rf $(VENVNAME)
-
+	-@$(RMDIR) $(VENVNAME)
 
 #Runs profiler with generated inputs, creates outputs
 stddev:
-	@mkdir -p $(INPUTDIR)
+	-@$(RMDIR) $(INPUTDIR)
+	-@$(MKDIR) $(INPUTDIR)
+	-@$(RMDIR) $(PROFILEDIR)
+	-@$(MKDIR) $(PROFILEDIR)
 
-	@$(PYTHON) src/generate.py 10 > $(INPUTDIR)/input10.txt
-	@$(PYTHON) src/generate.py 1000 > $(INPUTDIR)/input1000.txt
-	@$(PYTHON) src/generate.py 1000000 > $(INPUTDIR)/input1000000.txt
+	@$(PYTHON) src$(SEP)generate.py 10 > $(INPUTDIR)$(SEP)input10.txt
+	@$(PYTHON) src$(SEP)generate.py 1000 > $(INPUTDIR)$(SEP)input1000.txt
+	@$(PYTHON) src$(SEP)generate.py 1000000 > $(INPUTDIR)$(SEP)input1000000.txt
 
-	@$(PYTHON) src/profiling.py < $(INPUTDIR)/input10.txt
-	@mv stats.prof $(PROFILEDIR)/profile_10.prof
+	@$(PYTHON) src$(SEP)$(PROFILINGSCRIPT) < $(INPUTDIR)$(SEP)input10.txt
+	@$(MV) stats.prof $(PROFILEDIR)$(SEP)profile_10.prof
 
-	@$(PYTHON) src/profiling.py < $(INPUTDIR)/input1000.txt
-	@mv stats.prof $(PROFILEDIR)/profile_1000.prof
+	@$(PYTHON) src$(SEP)$(PROFILINGSCRIPT) < $(INPUTDIR)$(SEP)input1000.txt
+	@$(MV) stats.prof $(PROFILEDIR)$(SEP)profile_1000.prof
 
-	@$(PYTHON) src/profiling.py < $(INPUTDIR)/input1000000.txt
-	@mv stats.prof $(PROFILEDIR)/profile_1000000.prof
+	@$(PYTHON) src$(SEP)$(PROFILINGSCRIPT) < $(INPUTDIR)$(SEP)input1000000.txt
+	@$(MV) stats.prof $(PROFILEDIR)$(SEP)profile_1000000.prof
 
 	@echo "Profiling completed."
 
 #Runs tests for TESTFILES
 test: 
-	@pytest $(TESTFILES) && echo "All tests have passed!" || echo "Tests did not pass!"
+	@$(TESTFRAMEWORK) $(TESTFILES) && echo "All tests have passed!" || echo "Tests did not pass!"
 
 #Prints out "manual" for makefile
 help:
-	@echo "make all/ make -- Creates virtual environment and installs all dependencies"
+	@echo "make all / make -- Creates virtual environment and installs all dependencies"
 	@echo "make test -- Runs all tests"
 	@echo "make doc -- Creates doxygen documentation into $(PATHTODOCDIR)"
 	@echo "make rmdox -- Removes generated doxygen files"
@@ -69,11 +92,17 @@ help:
 	@echo "make clean -- Cleans temporary files and files not meant to be handed over"
 	@echo "make pack -- Packs the projects into a zip archive"
 
-# Archives project 
-pack: clean rmdox
-	@zip -r $(ZIPNAME) $(FILETOBEZIPPED)
+# Archives project - clean before
+pack: clean 
+	@zip $(ZIPNAME) $(FILETOBEZIPPED)
 
 #Removes temporary files and files not meant to be handed
 clean: rmdox rmenv
-	@rm -rf $(TOBECLEANED)
+	-@$(RMDIR) .pytest_cache
+	-@$(RMDIR) src$(SEP).pytest_cache
+	-@$(RMDIR) __pycache__
+	-@$(RMDIR) src$(SEP)__pycache__
+	-@$(RMDIR) $(INPUTDIR)
+	-@$(RMDIR) $(INPUTDIR)
+	-@$(RMDIR) $(PROFILEDIR)
 
