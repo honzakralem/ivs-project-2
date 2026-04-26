@@ -1,4 +1,4 @@
-.PHONY: venv rmenv clean all test doc help run rmdox profile
+.PHONY: venv rmenv clean all test doc help run rmdox stddev pack
 
 #CONFIGURATION
 VENVNAME=env
@@ -10,7 +10,8 @@ PATHTODOCDIR=src/doc
 INPUTDIR=inputs
 PROFILEDIR=profiling
 TOBECLEANED=.pytest_cache src/.pytest_cache __pycache__ src/__pycache__ inputs
-
+ZIPNAME=xphamha00_xduzekk00_xholesm00_xstania00.zip
+FILETOBEZIPPED=src mockup plan profiling makefile README.md stddev LICENSE VERSION install.sh ubuntu_dependencies.txt src/requirements.txt 
 #Creates virtual environment and downloads all dependencies
 all: 
 	@$(PYTHON) src/setup.py
@@ -33,7 +34,7 @@ rmenv:
 
 
 #Runs profiler with generated inputs, creates outputs
-profile:
+stddev:
 	@mkdir -p $(INPUTDIR)
 
 	@$(PYTHON) src/generate.py 10 > $(INPUTDIR)/input10.txt
@@ -64,10 +65,15 @@ help:
 	@echo "make run -- Runs the calculator application"
 	@echo "make rmenv -- Deletes the virtual environment directory"
 	@echo "make generate -- Generates profiling input files"
-	@echo "make profile -- Generates inputs and runs profiling"
+	@echo "make stddev -- Generates inputs and runs profiling"
 	@echo "make clean -- Cleans temporary files and files not meant to be handed over"
+	@echo "make pack -- Packs the projects into a zip archive"
+
+# Archives project 
+pack: clean rmdox
+	@zip -r $(ZIPNAME) $(FILETOBEZIPPED)
 
 #Removes temporary files and files not meant to be handed
-clean:
+clean: rmdox rmenv
 	@rm -rf $(TOBECLEANED)
 	@rm -f $(PROFILEDIR)/*
