@@ -76,4 +76,4 @@ pack: clean rmdox
 #Removes temporary files and files not meant to be handed
 clean: rmdox rmenv
 	@rm -rf $(TOBECLEANED)
-	@rm -f $(PROFILEDIR)/*
+
