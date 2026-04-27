@@ -25,11 +25,11 @@
 
 ## FOR USERS
 
-It is recommended to read the [user manual](src/doc/IVS2_user_man.pdf). The document specifies the version for which the manual is current.
+It is recommended to read the [user manual](src/doc/manualeng.pdf). The document specifies the version for which the manual is current.
 
 ## FOR DEVELOPERS
 
-It is recommended to read the [programmer's manual](src/doc/IVS2_prog_man.pdf). It is frequently updated and specifies the version and date for which it is current.
+It is recommended to read the [programmer's manual](src/doc/IVS2_prog_maneng.pdf). It is frequently updated and specifies the version and date for which it is current.
 
 ## LICENSE
 

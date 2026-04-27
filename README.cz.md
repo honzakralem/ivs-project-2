@@ -24,7 +24,7 @@
 
 ## PRO UŽIVATELE
 
-Doporučuje se přečíst [manuál pro uživatele](src/doc/IVS2_user_man.pdf). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
+Doporučuje se přečíst [manuál pro uživatele](src/doc/manual). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
 
 ## PRO VÝVOJÁŘE
 
