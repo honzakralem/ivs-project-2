@@ -1,3 +1,6 @@
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/honzakralem/ivs-project-2/blob/master/README.en.md)
+
+
 <p align="center">
   <img src="./src/assets/icon-no-text.png" alt="alt text" width="64">
 </p>
