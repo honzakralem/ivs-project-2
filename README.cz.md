@@ -1,4 +1,4 @@
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/honzakralem/ivs-project-2/blob/master/README.en.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/honzakralem/ivs-project-2/blob/master/README.md)
 
 
 <p align="center">
