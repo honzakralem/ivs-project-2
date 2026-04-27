@@ -2,6 +2,7 @@
 
 #DETECT OS
 ifeq ($(OS),Windows_NT)
+    SHELL=cmd.exe
     empty :=
     SEP := \$(empty)
     RM := del /f /q
@@ -32,6 +33,7 @@ SETUPSCRIPT=src$(SEP)setup.py
 RUNSCRIPT=src$(SEP)gui.py
 PROFILINGSCRIPT=profiling.py
 TESTFRAMEWORK=pytest
+GITHUB_REPO=honzakralem/ivs-project-2
 
 #Creates virtual environment and downloads all dependencies
 all:
@@ -109,32 +111,28 @@ else
 	@echo "make pack -- Packs the project into a zip archive"
 endif
 
-# Archives project into the required structure
-# Note: manually place installers into install/ before final zip
+# Archives project into the required structure (doc/, install/, repo/)
+# Requires: gh CLI installed and authenticated (gh auth login)
 pack: clean
+ifeq ($(OS),Windows_NT)
+	@mkdir $(PACKDIR)\doc
+	@mkdir $(PACKDIR)\install
+	@mkdir $(PACKDIR)\repo
+	@xcopy /E /I /Y src\doc $(PACKDIR)\doc
+	@gh release download --repo $(GITHUB_REPO) --dir $(PACKDIR)\install --pattern *
+	@git clone . $(PACKDIR)\repo
+	@tar -a -cf $(ZIPNAME) $(PACKDIR)
+	@rd /s /q $(PACKDIR)
+	@echo Packed into $(ZIPNAME)
+else
 	@$(MKDIR) $(PACKDIR)$(SEP)doc
 	@$(MKDIR) $(PACKDIR)$(SEP)install
 	@$(MKDIR) $(PACKDIR)$(SEP)repo
-
-ifeq ($(OS),Windows_NT)
-	@xcopy /E /I /Y src\doc $(PACKDIR)\doc
-
-	@git clone . $(PACKDIR)\repo
-
-	@tar -a -cf $(ZIPNAME) $(PACKDIR)
-else
 	@cp -r src$(SEP)doc$(SEP)* $(PACKDIR)$(SEP)doc$(SEP)
-
+	@gh release download --repo $(GITHUB_REPO) --dir $(PACKDIR)$(SEP)install --pattern '*'
 	@git clone . $(PACKDIR)$(SEP)repo
-
 	@zip -r $(ZIPNAME) $(PACKDIR)
-endif
-
 	@$(RMDIR) $(PACKDIR)
-	
-ifeq ($(OS),Windows_NT)
-	@echo Packed into $(ZIPNAME)
-else
 	@echo "Packed into $(ZIPNAME)"
 endif
 
