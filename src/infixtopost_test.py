@@ -5,7 +5,7 @@
 @file infixtopost_test.py
 @brief Tests for infix to postfix conversion for IVS calculator 2026
 @date 29.3.2026
-@author Kristian Duzek <xduzekk00>
+@author Kristian Duzek 
 """
 
 from infixtopost import *

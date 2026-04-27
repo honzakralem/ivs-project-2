@@ -4,7 +4,7 @@
 """!
 @file setup.py
 @brief Python script to download dependencies, runs only when make command is ran from "ivs-project-2/makefile"
-@author Ha Pham <xphamha00>
+@author Ha Pham 
 @date 6.4.2026
 """
 

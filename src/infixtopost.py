@@ -5,7 +5,7 @@
 @file infixtopost.py
 @brief Conversion of infix expression to a postfix expression
 @date 27.3.2026
-@author Ha Pham <xphamha00>
+@author Ha Pham 
 """
 
 from mathlib import *

@@ -5,7 +5,7 @@
 @file mathlib_test.py
 @brief Math library Tests for IVS calculator 2026, implementation of tests for calculator library
 @date 12.3.2026
-@author Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+@author Ha Pham, Kristian Duzek 
 """
 
 from mathlib import *

@@ -1,6 +1,6 @@
 """! @file generate.py 
 @brief Profiling tool for generating input data files for profiling.
-@author Kristian Duzek <xduzekk00> 
+@author Kristian Duzek 
 """
 
 import random

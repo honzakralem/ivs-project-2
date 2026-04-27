@@ -5,7 +5,7 @@
 @file mathlib.py
 @brief Math library for IVS calculator 2026, implemenation of calculator functions
 @date 12.3.2026
-@author: Ha Pham <xphamha00> Kristian Duzek <xduzekk00>
+@author: Ha Pham, Kristian Duzek 
 """
 
 import math

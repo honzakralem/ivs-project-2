@@ -1,6 +1,6 @@
 """! @file profiling.py
 @brief Profiling tool calculating deviation using the math library
-@author Kristian Duzek <xduzekk00>
+@author Kristian Duzek 
 """
 
 from mathlib import *
