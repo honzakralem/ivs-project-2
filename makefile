@@ -26,8 +26,8 @@ PATHTODOXYFILE=src$(SEP)Doxyfile
 PATHTODOCDIR=src$(SEP)doc
 INPUTDIR=inputs
 PROFILEDIR=profiling
-ZIPNAME=xphamha00_xduzekk00_xholesm00_xstania00.zip
-FILETOBEZIPPED=src mockup plan profiling makefile README.md LICENSE VERSION
+PACKDIR=xphamha00_xduzekk00_xholesm00_xstania00
+ZIPNAME=$(PACKDIR).zip
 SETUPSCRIPT=src$(SEP)setup.py
 RUNSCRIPT=src$(SEP)gui.py
 PROFILINGSCRIPT=profiling.py
@@ -109,12 +109,33 @@ else
 	@echo "make pack -- Packs the project into a zip archive"
 endif
 
-# Archives project - clean before
+# Archives project into the required structure
+# Note: manually place installers into install/ before final zip
 pack: clean
+	@$(MKDIR) $(PACKDIR)$(SEP)doc
+	@$(MKDIR) $(PACKDIR)$(SEP)install
+	@$(MKDIR) $(PACKDIR)$(SEP)repo
+
 ifeq ($(OS),Windows_NT)
-	@tar -a -cf $(ZIPNAME) $(FILETOBEZIPPED)
+	@xcopy /E /I /Y src\doc $(PACKDIR)\doc
+
+	@git clone . $(PACKDIR)\repo
+
+	@tar -a -cf $(ZIPNAME) $(PACKDIR)
 else
-	@zip -r $(ZIPNAME) $(FILETOBEZIPPED)
+	@cp -r src$(SEP)doc$(SEP)* $(PACKDIR)$(SEP)doc$(SEP)
+
+	@git clone . $(PACKDIR)$(SEP)repo
+
+	@zip -r $(ZIPNAME) $(PACKDIR)
+endif
+
+	@$(RMDIR) $(PACKDIR)
+	
+ifeq ($(OS),Windows_NT)
+	@echo Packed into $(ZIPNAME)
+else
+	@echo "Packed into $(ZIPNAME)"
 endif
 
 #Removes temporary files and files not meant to be handed
