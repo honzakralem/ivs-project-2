@@ -1,7 +1,5 @@
 [![cz](https://img.shields.io/badge/lang-cz-red.svg)](https://github.com/honzakralem/ivs-project-2/blob/master/README.cz.md)
 
-
-
 <p align="center">
   <img src="./src/assets/icon-no-text.png" alt="alt text" width="64">
 </p>
@@ -25,7 +23,7 @@
 
 ## FOR USERS
 
-It is recommended to read the [user manual](src/doc/manualeng.pdf). The document specifies the version for which the manual is current.
+It is recommended to read the [user manual](manualeng.pdf). The document specifies the version for which the manual is current.
 
 ## FOR DEVELOPERS
 
