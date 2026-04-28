@@ -1,6 +1,5 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/honzakralem/ivs-project-2/blob/master/README.md)
 
-
 <p align="center">
   <img src="./src/assets/icon-no-text.png" alt="alt text" width="64">
 </p>
@@ -24,7 +23,7 @@
 
 ## PRO UŽIVATELE
 
-Doporučuje se přečíst [manuál pro uživatele](src/doc/manual). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
+Doporučuje se přečíst [manuál pro uživatele](manual.pdf). V dokumentu je uvedeno pro jakou verzi je manuál aktuální.
 
 ## PRO VÝVOJÁŘE
 
