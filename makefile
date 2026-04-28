@@ -1,7 +1,8 @@
-.PHONY: venv rmenv clean all test doc help run rmdox stddev pack
+.PHONY: all rmenv clean all test doc help run rmdox stddev pack
 
 #DETECT OS
 ifeq ($(OS),Windows_NT)
+    SHELL=cmd.exe
     empty :=
     SEP := \$(empty)
     RM := del /f /q
@@ -26,12 +27,13 @@ PATHTODOXYFILE=src$(SEP)Doxyfile
 PATHTODOCDIR=src$(SEP)doc
 INPUTDIR=inputs
 PROFILEDIR=profiling
-ZIPNAME=xphamha00_xduzekk00_xholesm00_xstania00.zip
-FILETOBEZIPPED=src mockup plan profiling makefile README.md LICENSE VERSION
+PACKDIR=xphamha00_xduzekk00_xholesm00_xstania00
+ZIPNAME=$(PACKDIR).zip
 SETUPSCRIPT=src$(SEP)setup.py
 RUNSCRIPT=src$(SEP)gui.py
 PROFILINGSCRIPT=profiling.py
 TESTFRAMEWORK=pytest
+GITHUB_REPO=honzakralem/ivs-project-2
 
 #Creates virtual environment and downloads all dependencies
 all:
@@ -43,8 +45,13 @@ doc:
 
 #Removes doxygen documentation from PATHTODOCDIR
 rmdox:
+ifeq ($(OS),Windows_NT)
+	-@if exist $(PATHTODOCDIR)$(SEP)html $(RMDIR) $(PATHTODOCDIR)$(SEP)html
+	-@if exist $(PATHTODOCDIR)$(SEP)latex $(RMDIR) $(PATHTODOCDIR)$(SEP)latex
+else
 	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)html
 	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)latex
+endif
 
 #Launches the calculator
 run:
@@ -52,7 +59,11 @@ run:
 
 #Removes virtual environment
 rmenv:
+ifeq ($(OS),Windows_NT)
+	-@if exist $(VENVNAME) $(RMDIR) $(VENVNAME)
+else
 	-@$(RMDIR) $(VENVNAME)
+endif
 
 #Runs profiler with generated inputs, creates outputs
 stddev:
@@ -109,18 +120,43 @@ else
 	@echo "make pack -- Packs the project into a zip archive"
 endif
 
-# Archives project - clean before
-pack: clean
+# Archives project into the required structure (doc/, install/, repo/)
+# Requires: gh CLI installed and authenticated (gh auth login)
+pack: clean doc
 ifeq ($(OS),Windows_NT)
-	@tar -a -cf $(ZIPNAME) $(FILETOBEZIPPED)
+	@mkdir $(PACKDIR)\doc
+	@mkdir $(PACKDIR)\install
+	@mkdir $(PACKDIR)\repo
+	@xcopy /E /I /Y src\doc $(PACKDIR)\doc
+	@gh release download --repo $(GITHUB_REPO) --dir $(PACKDIR)\install --pattern *
+	@git clone . $(PACKDIR)\repo
+	@tar -a -cf $(ZIPNAME) $(PACKDIR)
+	@rd /s /q $(PACKDIR)
+	@echo Packed into $(ZIPNAME)
 else
-	@zip -r $(ZIPNAME) $(FILETOBEZIPPED)
+	@$(MKDIR) $(PACKDIR)$(SEP)doc
+	@$(MKDIR) $(PACKDIR)$(SEP)install
+	@$(MKDIR) $(PACKDIR)$(SEP)repo
+	@cp -r src$(SEP)doc$(SEP)* $(PACKDIR)$(SEP)doc$(SEP)
+	@gh release download --repo $(GITHUB_REPO) --dir $(PACKDIR)$(SEP)install --pattern '*'
+	@git clone . $(PACKDIR)$(SEP)repo
+	@zip -r $(ZIPNAME) $(PACKDIR)
+	@$(RMDIR) $(PACKDIR)
+	@echo "Packed into $(ZIPNAME)"
 endif
 
 #Removes temporary files and files not meant to be handed
 clean: rmdox rmenv
+ifeq ($(OS),Windows_NT)
+	-@if exist .pytest_cache $(RMDIR) .pytest_cache
+	-@if exist src$(SEP).pytest_cache $(RMDIR) src$(SEP).pytest_cache
+	-@if exist __pycache__ $(RMDIR) __pycache__
+	-@if exist src$(SEP)__pycache__ $(RMDIR) src$(SEP)__pycache__
+	-@if exist $(INPUTDIR) $(RMDIR) $(INPUTDIR)
+else
 	-@$(RMDIR) .pytest_cache
 	-@$(RMDIR) src$(SEP).pytest_cache
 	-@$(RMDIR) __pycache__
 	-@$(RMDIR) src$(SEP)__pycache__
 	-@$(RMDIR) $(INPUTDIR)
+endif
