@@ -1,4 +1,4 @@
-.PHONY: venv rmenv clean all test doc help run rmdox stddev pack
+.PHONY: all rmenv clean all test doc help run rmdox stddev pack
 
 #DETECT OS
 ifeq ($(OS),Windows_NT)
@@ -122,7 +122,7 @@ endif
 
 # Archives project into the required structure (doc/, install/, repo/)
 # Requires: gh CLI installed and authenticated (gh auth login)
-pack: clean
+pack: clean doc
 ifeq ($(OS),Windows_NT)
 	@mkdir $(PACKDIR)\doc
 	@mkdir $(PACKDIR)\install
