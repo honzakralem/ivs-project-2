@@ -45,8 +45,13 @@ doc:
 
 #Removes doxygen documentation from PATHTODOCDIR
 rmdox:
+ifeq ($(OS),Windows_NT)
+	-@if exist $(PATHTODOCDIR)$(SEP)html $(RMDIR) $(PATHTODOCDIR)$(SEP)html
+	-@if exist $(PATHTODOCDIR)$(SEP)latex $(RMDIR) $(PATHTODOCDIR)$(SEP)latex
+else
 	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)html
 	-@$(RMDIR) $(PATHTODOCDIR)$(SEP)latex
+endif
 
 #Launches the calculator
 run:
@@ -54,7 +59,11 @@ run:
 
 #Removes virtual environment
 rmenv:
+ifeq ($(OS),Windows_NT)
+	-@if exist $(VENVNAME) $(RMDIR) $(VENVNAME)
+else
 	-@$(RMDIR) $(VENVNAME)
+endif
 
 #Runs profiler with generated inputs, creates outputs
 stddev:
@@ -138,8 +147,16 @@ endif
 
 #Removes temporary files and files not meant to be handed
 clean: rmdox rmenv
+ifeq ($(OS),Windows_NT)
+	-@if exist .pytest_cache $(RMDIR) .pytest_cache
+	-@if exist src$(SEP).pytest_cache $(RMDIR) src$(SEP).pytest_cache
+	-@if exist __pycache__ $(RMDIR) __pycache__
+	-@if exist src$(SEP)__pycache__ $(RMDIR) src$(SEP)__pycache__
+	-@if exist $(INPUTDIR) $(RMDIR) $(INPUTDIR)
+else
 	-@$(RMDIR) .pytest_cache
 	-@$(RMDIR) src$(SEP).pytest_cache
 	-@$(RMDIR) __pycache__
 	-@$(RMDIR) src$(SEP)__pycache__
 	-@$(RMDIR) $(INPUTDIR)
+endif
