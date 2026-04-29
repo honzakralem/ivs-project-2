@@ -9,4 +9,4 @@
 - ✅ Profiling - xphamha00, xduzekk00
 - ✅ Mock-ups - všichni
 - ✅ Debug - xholesm00, xstania00
-- ☐ Odevzdání projektu - xphamha00
+- ✅ Odevzdání projektu - xphamha00
